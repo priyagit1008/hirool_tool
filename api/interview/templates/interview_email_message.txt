@@ -1,0 +1,4 @@
+
+Hello {{name}}
+hi {{date}}
+hi {{location}}

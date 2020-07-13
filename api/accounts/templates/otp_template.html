@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		.button {
+			background-color:#0080ff;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			}
+		.body {
+			background-color: #0080ff;
+			width: 100%;
+			margin-left: 10%;
+			margin-right: 10%;
+			color: #fff;
+			text-align: center;
+			font-size: 16px;
+			padding: 10px 0;
+		}
+		.card {
+			background-color : #fff;
+			display: block;
+			width: 50%;
+			margin-left: 25%;
+			padding:30px 0px;
+		}
+		.card-text {
+			width: 200%;
+			text-align: center;
+			color: #5f5f5f;
+		}
+		.otp-text {
+			color: #ff0000;
+			font-weight: bold;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="body"><span style="margin-top: 5%">Welcome to Hirool</span>
+		<div class="card">
+			<span class="card-text"><h1>Welcome</h1></span>
+			<span class="card-text">Hi Here is your One time Password</span>
+			<span class="otp-text">{{user}}</span>
+			<span class="card-text"><h1>Click the link below to signup</h1></span>
+			<!-- <span class="card-text"><h3>Signup to HIROOL</h3></span> -->
+			<button><a href=""class="button" style="color:white"><span>Signup to HIROOL</span></a></button>
+			<span class="card-text"><h4>Thanks!</h4></span>
+			<span class="card-text"><h4>Team Hirool</h4></span>
+		</div>
+	</div>
+</body>
+</html>
+
+<!--  <!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style> .button {
+			background-color:blue;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			}
+</style>
+</head>
+<body>
+	<h1>Hirool</h1>
+	<div style="width:300px;
+			height: 140px;
+			padding: 50px;
+			background-color:blue;
+			box-shadow: 10px 10px">
+
+			
+			<p><div style="width:150px;
+			height: 80px;
+			padding: 25px;
+			background-color:white;
+			box-shadow: 10px 10px">
+			<b><h1>Welcome</h1></b>
+			Hi here is <strong style="color:red;">{{user}}</strong> otp.</p>
+</body>
+</html>
+!-- <h1 style="color: Black">Confirm your email address to get started on Hirool</h1>
+	<h4>Once you've confirmed that is 
+	your email address, we’ll help you update your password</h4>
+    <h2>hi <strong>{{request.user.email}}</strong></h2>
+ <b><a href="/home/priya/workspace/hire-api/api/accounts/templates/update_pass_page.html" class="button" style="color: #fff">confirm emailaddress</a></b>    -->

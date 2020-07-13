@@ -1,0 +1,35 @@
+[
+   {
+      "model": "accounts.UserRole",
+      "pk": "6c88ca7d-9af6-4163-8195-bc25e7a0d731",
+      "fields": {
+         "created_at": "2019-01-01T11:20:30.000Z",
+         "updated_at": "2011-01-01T11:20:30.000Z",
+         "is_active": true,
+         "role_name": "executive",
+         "permissions": {}
+      }
+   },
+   {
+      "model": "accounts.UserRole",
+      "pk": "6c88ca7d-9af6-4163-8195-bc25e7a0d732",
+      "fields": {
+         "created_at": "2019-01-01T11:20:30.000Z",
+         "updated_at": "2011-01-01T11:20:30.000Z",
+         "is_active": true,
+         "role_name": "manager",
+         "permissions": {}
+      }
+   },
+   {
+      "model": "accounts.UserRole",
+      "pk": "6c88ca7d-9af6-4163-8195-bc25e7a0d733",
+      "fields": {
+         "created_at": "2019-01-01T11:20:30.000Z",
+         "updated_at": "2011-01-01T11:20:30.000Z",
+         "is_active": true,
+         "role_name": "admin",
+         "permissions": {}
+      }
+   }
+]

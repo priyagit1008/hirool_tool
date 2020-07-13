@@ -1,0 +1,37 @@
+export HIRE_API_DEBUG_FLAG="0"
+export HIRE_API_ENV="Local"
+export HIRE_API_ALLOWED_HOSTS="*"
+export HIRE_API_DATADOG_FLAG="0"
+
+# Database Config
+export HIRE_API_DATABASE_NAME="hire"
+export HIRE_API_DATABASE_USER="hire"
+export HIRE_API_DATABASE_PASSWORD="hire"
+export HIRE_API_DATABASE_HOST="locahost"
+export HIRE_API_DATABASE_PORT="5432"
+
+# Consumer Service Config
+export HIRE_API_CONSUMER_HOST="http://localhost:8000"
+export HIRE_API_CONSUMER_AUTHORIZATION="Token put-your-token-here"
+
+# Elasticsearch service config
+export HIRE_API_ELASTICSEARCH_HOSTS="localhost:9200,locahost:9200"
+export HIRE_API_ELASTICSEARCH_INDEX="put-your-index-here"
+
+# Sentry Config
+export HIRE_API_SENTRY_DSN=""
+export HIRE_API_SENTRY_RELEASE="v1.2.1"
+export HIRE_API_SENTRY_ENV="Local"
+
+# Rabbitmq URL
+export HIRE_API_CELERY_BROKER="amqp://guest:guest@localhost"
+
+# Google Map Config
+export HIRE_API_GOOGLE_MAP_KEY=""
+
+# Redis Config
+export HIRE_API_REDIS_HOST="localhost"
+export HIRE_API_REDIS_PORT="6379"
+export HIRE_API_REDIS_DB="0"
+export HIRE_API_REDIS_PASSWORD="enter-your-password-here"
+

@@ -1,0 +1,97 @@
+{
+  "items" : 
+ [
+   {
+     "name": "Dashboard",
+     "url": "/dashboard",
+     "icon": "fa fa-dashboard",
+     "id" : "1",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Clients",
+     "url": "/clients/allclients",
+     "icon": "fa fa-handshake-o",
+     "id" : "2",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Job Description",
+     "url": "/joblist/alljoblist",
+     "icon": "fa fa-file-text",
+     "id" : "3",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Candidates",
+     "url": "/candidates/allcandidates",
+     "icon": "fa fa-list",
+     "id" : "4",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Interviews",
+     "url": "/interviews/allinterviews",
+     "icon": "fa fa-bookmark",
+     "id" : "5",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Users",
+     "url": "/users/allusers",
+     "icon": "fa fa-user-circle-o",
+     "id" : "6",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Settings",
+     "url": "/settings",
+     "icon": "fa fa-gear",
+     "id" : "7",
+     "children": [
+        {
+        "name": "Roles",
+        "url": "/settings/setrolespermission",
+        "icon": "fa fa-keyboard-o"
+        },
+        {
+        "name": "Config",
+        "url": "/settings/configuration",
+        "icon": "fa fa-refresh"
+        }
+      ]
+   },
+   {
+     "name": "Leave Tracker",
+     "url": "/leavetracker/allleaves",
+     "icon": "fa fa-calendar",
+     "id" : "9",
+     "badge": {
+       "variant": "info"
+     }
+   },
+   {
+     "name": "Examples",
+     "url": "/examples",
+     "icon": "fa fa-user-circle-o",
+     "id" : "8",
+     "badge": {
+       "variant": "info"
+     }
+   }
+  ]
+}
+ 
+

@@ -1,0 +1,17 @@
+[
+  {
+    "model": "misc.apiconfig",
+    "pk": 1,
+    "fields": {
+      "is_active": true,
+      "created_at": "2018-07-20T10:50:10.601Z",
+      "updated_at": "2018-07-20T11:03:04.382Z",
+      "key": "celery_config",
+      "usage_type": "celery",
+      "value": {
+        "blocked_unit_delay": 600
+      },
+      "text_value": null
+    }
+  }
+]

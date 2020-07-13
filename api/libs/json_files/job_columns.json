@@ -1,0 +1,42 @@
+[
+		{
+			"dataField" : "job_title",
+			"text" : "Job Title",
+			"sort" : true
+		},
+        {
+            "dataField" : "client_name",
+            "text" : "Client Name",
+            "sort" : true
+        },
+		{
+			"dataField" : "tech_skills",
+			"text" : "Skills required",
+			"sort" : true
+		},
+		{
+			"dataField" : "job_location",
+			"text" : "Location",
+			"sort" : true
+		},
+		{
+			"dataField" : "min_exp",
+			"text" : "Min experience",
+			"sort" : true
+		},
+		{
+			"dataField" : "max_notice",
+			"text" : "Notice period",
+			"sort" : true
+		},
+        {
+            "dataField" : "qualification",
+            "text" : "Qualification",
+            "sort" : true
+        },
+        {
+            "dataField" : "expiring_days",
+            "text" : "Expires in",
+            "sort" : true
+        }
+	]
