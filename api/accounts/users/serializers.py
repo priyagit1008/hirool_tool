@@ -97,7 +97,7 @@ class UserRegSerializer(serializers.ModelSerializer):
 		
 		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic',
 			'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location','previous_company',
-			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to','password')
+			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to',)
 		# fields='__all__'
 		write_only_fields = ('password',)
 		read_only_fields = ('id',)
@@ -115,16 +115,15 @@ class UserListSerialize(serializers.ModelSerializer):
 	
 	class Meta:
 		model = User
-		fields='__all__'
-		# fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic',
-		# 	'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_loc',
-		# 	'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to')
-
-
+		# fields='__all__'
+		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic',
+			'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location','previous_company',
+			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to',)
+		# fields='__all__'
 class UserDrowpdownGetSerializer(serializers.Serializer):
 	user_id=serializers.CharField(source='id',required=True, min_length=2)
-	value = serializers.CharField(source='reporting_to',required=True, min_length=2)
-	label = serializers.CharField(source='reporting_to',required=True, min_length=2)
+	value = serializers.CharField(source='first_name',required=True, min_length=2)
+	label = serializers.CharField(source='first_name',required=True, min_length=2)
 	class Meta:
 		model = User
 		fields = ('user_id','value','label')

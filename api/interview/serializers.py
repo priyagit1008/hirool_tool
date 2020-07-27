@@ -87,28 +87,7 @@ class InterviewStatusGetSerializer(serializers.ModelSerializer):
         model= InterviewStatus
         fields= ('id','status')
 
-        
-
-# class InterviewGetSerializer(serializers.ModelSerializer):
-
-#   client = ClientGetSerializer()
-#   job = JobGetSerializer()
-#   candidate = CandidateGetSerializer()
-#   user = UserGetSerializer()
-#   interview_round=InterviewRoundGetSerializer()
-#   interview_status=InterviewStatusGetSerializer()
-
-#   class Meta:
-#       model = Interview
-        
-#       fields = (
-
-#           'id','client','job','user','candidate',
-#           'interview_round','interview_status','date','location'
-#       )
-        # write_only_fields = ('password',)
-        # read_only_fields = ('id',)
-
+ 
 
 class InterviewListSerializer(serializers.ModelSerializer):
 
@@ -122,13 +101,13 @@ class InterviewListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Interview
-        fields='__all__'
+        # fields='__all__'
         
-        # fields = (
+        fields = (
 
-        #   'id','client','job','user','candidate',
-        #   'interview_round','interview_status','date','location'
-        # )
+          'id','client','job','user','candidate',
+          'interview_round','interview_status','date','location'
+        )
 
         #   'id','client','job','user','candidate',
         #   'interview_round','interview_status','date','location'

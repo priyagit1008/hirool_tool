@@ -22,7 +22,8 @@ from django.core.mail import send_mail
 
 from django.template.loader import render_to_string
 from django.conf import settings
-
+from django.core.paginator import Paginator
+from rest_framework.pagination import PageNumberPagination
 
 # app level imports
 from .models import User, Actions, Permissions, UserPermissions,UserRole
@@ -84,6 +85,12 @@ class UserViewSet(GenericViewSet):
 	"""
 	permissions = (HiroolReadOnly,)
 	pagination_class = CursorSetPagination
+	queryset=User.objects.all()
+	# pagination_class = PageNumberPagination
+	# paginator = Paginator(queryset, 10)
+	# page_size = 1
+
+
 
 	services = UserServices()
 	filter_backends = (filters.OrderingFilter,)
@@ -106,6 +113,12 @@ class UserViewSet(GenericViewSet):
 		'user_dropdown':UserDrowpdownGetSerializer ,
 		'delete_user':UserListSerialize }
 
+
+	def get_queryset(self,filterdata=None):
+		if filterdata:
+			self.queryset =User.objects.filter(**filterdata)
+		return self.queryset
+
 	def get_serializer_class(self):
 		"""
 		Returns serilizer class
@@ -123,7 +136,6 @@ class UserViewSet(GenericViewSet):
 		"""
 		serializer = self.get_serializer(data=request.data)
 		if serializer.is_valid() is False:
-			print(serializer.errors)
 			raise ParseException({'status':'Incorrect Input'}, serializer.errors)
 		if User.objects.filter(email=self.request.data['email']).exists():
 			return Response({"status":"User already exists"},status=status.HTTP_400_BAD_REQUEST)
@@ -144,8 +156,7 @@ class UserViewSet(GenericViewSet):
 		Return user login
 		"""
 		serializer = self.get_serializer(data=request.data)
-		print(request.data)
-		print(request)
+
 
 		if serializer.is_valid() is False:
 			raise ParseException(BAD_REQUEST, serializer.errors)
@@ -171,26 +182,64 @@ class UserViewSet(GenericViewSet):
 		return Response(status=status.HTTP_200_OK)
 
 
+	def user_query_string(self,filterdata):
+		if "work_location" in filterdata:
+			filterdata["work_location__icontains"] = filterdata.pop("work_location")
 
+		if "designation" in filterdata:
+			filterdata["designation__icontains"] = filterdata.pop("designation")
+
+		if "status" in filterdata:
+			filterdata["status__icontains"] = filterdata.pop("status")
+
+		if "reporting_to" in filterdata:
+			filterdata["reporting_to__gte"] = filterdata.pop("reporting_to")
+
+		if "joined_date_from" in filterdata:
+			filterdata["joined_date__gte"] = filterdata.pop("joined_date_from")
+
+		if "joined_date_to" in filterdata:
+			filterdata["joined_date__lte"] = filterdata.pop("joined_date_to")
+
+		if "resigned_date_from" in filterdata:
+			filterdata["resigned_date__gte"] = filterdata.pop("resigned_date_from")
+
+		if "resigned_date_to" in filterdata:
+			filterdata["resigned_date__lte"] = filterdata.pop("resigned_date_to")
+			
+		return filterdata
+
+	# def  user_query_set(self,filterdata):
+	# 	if "name" in filterdata:
+	# 		filtename = filterdata.copy("filterdata")
+
+
+		
 	@action(
 		methods=['get'],
 		detail=False,
 		# url_path='image-upload',
-		permission_classes=[IsAuthenticated, ],pagination_class=[CursorSetPagination,]
+		permission_classes=[IsAuthenticated, ],
 	)
-	def list_exec(self, request, **dict):
+
+
+	def list_exec(self, request,**dict):
 		"""
 		Return user list data and groups
 		"""
+
 		try:
-			filter_data = request.query_params.dict()
-			serializer = self.get_serializer(self.services.get_queryset(filter_data), many=True)
-			return Response(serializer.data, status.HTTP_200_OK)
+			filterdata = self.user_query_string(request.query_params.dict())
+			result_page = paginator.paginate_queryset(PostServices.post_feed(filterdata=filterdata))
+
+			page = self.paginate_queryset(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page,many=True)
+			return self.get_paginated_response(serializer.data)
 		except Exception as e:
 			raise
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
-	
-    
+
+
     
 	@action(
 		methods=['get'],
@@ -304,12 +353,12 @@ class UserViewSet(GenericViewSet):
 		# 	return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
-	@action(
-		methods=['put'],
-		detail=False,
-		# url_path='image-upload',
-		permission_classes=[IsAuthenticated, ],
-	)
+	# @action(
+	# 	methods=['put'],
+	# 	detail=False,
+	# 	# url_path='image-upload',
+	# 	permission_classes=[IsAuthenticated, ],
+	# )
 
 	@action(
 		methods=['get'],

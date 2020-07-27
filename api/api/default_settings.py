@@ -181,6 +181,8 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S%z',
     'DATE_FORMAT' : '%d-%m-%Y',
+    'DATE_INPUT_FORMATS ':'%d-%m-%Y',
+
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
@@ -198,10 +200,11 @@ REST_FRAMEWORK = {
     'accounts.users.permissions.HiroolReadWrite',
 
 ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
-#     'DEFAULT_PAGINATION_CLASS': ['rest_framework.pagination.LimitOffsetPagination',
-#     'PAGE_SIZE': 1]
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.DESIRED_PAGINATION_STYLE',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'PAGE_SIZE': 1,
 }
 
 # Admin Login URL

@@ -6,6 +6,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 from rest_framework import serializers
+from django.core.paginator import Paginator
+
 
 # from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
@@ -54,6 +56,8 @@ class ClientViewSet(GenericViewSet):
 	"""
 	"""
 	permissions=(HiroolReadOnly,HiroolReadWrite)
+	queryset = Client.objects.all()
+	paginator = Paginator(queryset, 10)
 	services = ClientServices()
 	filter_backends = (filters.OrderingFilter,)
 	authentication_classes = (TokenAuthentication,)
@@ -75,6 +79,11 @@ class ClientViewSet(GenericViewSet):
 		# 'org_dropdown':ClientGetSerializer,
 
 	}
+
+	def get_queryset(self,filterdata=None):
+		if filterdata:
+			self.queryset = Client.objects.filter(**filterdata)
+		return self.queryset
 
 	def get_serializer_class(self):
 		"""
@@ -120,22 +129,36 @@ class ClientViewSet(GenericViewSet):
 		except Exception as e:
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
+
+	def query_string(self,filterdata):
+		if "name" in filterdata:
+			filterdata["name__icontains"] = filterdata.pop("name")
+			return filterdata
+		if "category" in filterdata:
+			filterdata["category__icontains"] = filterdata.pop("category")
+		if "industry" in filterdata:
+			filterdata["industry__icontains"] = filterdata.pop("industry")
+
+
 	@action(
 		methods=['get'],
 		detail=False,
 		# url_path='image-upload',
 		permission_classes=[IsAuthenticated, ],
 	)
-	def org_list(self, request, **dict):
+	def org_list(self, request,**dict):
 		"""
 		Return user list data and groups
 		"""
 		try:
-			filter_data = request.query_params.dict()
-			serializer = self.get_serializer(self.services.get_queryset(filter_data), many=True)
+			filterdata = self.query_string(request.query_params.dict())
+			page = self.paginator.get_page(self.get_queryset(filterdata))
+
+			serializer = self.get_serializer(page, many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
 
 
 	@action(
@@ -269,6 +292,8 @@ class JobViewSet(GenericViewSet):
 	# queryset = Job.objects.all()
 	filter_backends = (filters.OrderingFilter,)
 	authentication_classes = (TokenAuthentication,)
+	queryset=Job.objects.all()
+	paginator = Paginator(queryset, 10)
 
 	ordering_fields = ('id',)
 	ordering = ('id',)
@@ -290,7 +315,10 @@ class JobViewSet(GenericViewSet):
 
 	# queryset = services.get_queryset()
 
-  
+	def get_queryset(self,filterdata=None):
+		if filterdata:
+			self.queryset = Job.objects.filter(**filterdata)
+		return self.queryset
 	 
 	def get_serializer_class(self):
 		"""
@@ -352,6 +380,46 @@ class JobViewSet(GenericViewSet):
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
+	def job_query_string(self,filterdata):
+		if "client" in filterdata:
+			filterdata["client__name"] = filterdata.pop("client")
+
+		if "job_title" in filterdata:
+			filterdata["job_title__icontains"] = filterdata.pop("job_title")
+
+		if "tech_skills" in filterdata:
+			filterdata["tech_skills__icontains"] = filterdata.pop("tech_skills")
+
+		if "job_location" in filterdata:
+			filterdata["job_location__icontains"] = filterdata.pop("job_location")
+
+		if "min_exp" in filterdata:
+			filterdata["min_exp__gte"] = filterdata.pop("min_exp")
+
+		if "max_exp" in filterdata:
+			filterdata["max_exp__lte"] = filterdata.pop("max_exp")
+
+		if "min_ctc" in filterdata:
+			filterdata["min_ctc__gte"] = filterdata.pop("min_ctc")
+
+		if "max_ctc" in filterdata:
+			filterdata["max_ctc__lte"] = filterdata.pop("max_ctc")
+
+		if "qualification" in filterdata:
+			filterdata["qualification__icontains"] = filterdata.pop("qualification")
+
+		if "percentage_criteria" in filterdata:
+			filterdata["percentage_criteria__icontains"] = filterdata.pop("percentage_criteria")
+
+		if "min_notice_period" in filterdata:
+			filterdata["min_notice_period__gte"] = filterdata.pop("min_notice_period")
+
+		if "max_notice_period" in filterdata:
+			filterdata["max_notice_period__lte"] = filterdata.pop("max_notice_period")
+		return filterdata
+
+
+
 	
 	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated,],)
 	def job_list(self, request,**dict):
@@ -359,11 +427,16 @@ class JobViewSet(GenericViewSet):
 		Returns all jd details
 		"""
 		try:
-			filter_data = request.query_params.dict()
-			serializer=self.get_serializer(self.services.get_queryset(filter_data), many=True)
-			return Response(serializer.data,status.HTTP_200_OK)
+			filterdata = self.job_query_string(request.query_params.dict())
+			page = self.paginator.get_page(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page, many=True)
+
+			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
+			raise
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
+
 
 
 	@action(methods=['get','put'], detail=False, permission_classes=[IsAuthenticated,],)

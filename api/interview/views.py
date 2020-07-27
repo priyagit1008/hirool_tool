@@ -13,6 +13,8 @@ from accounts.users.permissions import HiroolReadOnly, HiroolReadWrite
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 import json 
+from django.core.paginator import Paginator
+
 
 # project level imports
 from libs.constants import (
@@ -51,11 +53,16 @@ class InterviewViewSet(GenericViewSet):
 	"""docstring for ClassName"""
 	permissions = (HiroolReadOnly, HiroolReadWrite)
 	services = InterviewServices()
+	queryset=Interview.objects.all()
+	paginator = Paginator(queryset, 10)
+
+
 
 	# queryset = services.get_queryset()
 
 	filter_backends = (filters.OrderingFilter,)
 	authentication_classes = (TokenAuthentication,)
+	
 
 	ordering_fields = ('id',)
 	ordering = ('id',)
@@ -69,6 +76,12 @@ class InterviewViewSet(GenericViewSet):
 		'interview_update': InterviewUpdateSerilaizer,
 		'delete_interview': InterviewListSerializer,
 	}
+
+	def get_queryset(self,filterdata=None):
+		if filterdata:
+			self.queryset = Interview.objects.filter(**filterdata)
+			print(Interview.objects.filter(**filterdata))
+		return self.queryset
 
 	def get_serializer_class(self):
 		"""
@@ -89,9 +102,9 @@ class InterviewViewSet(GenericViewSet):
 		interview = serializer.create(serializer.validated_data)
 
 		if interview:
-			# msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			# msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			# send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
+			msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
 			return Response({'status':'Successfully added'},status.HTTP_201_CREATED)
 
 		return Response({"status": "error"}, status.HTTP_404_NOT_FOUND)
@@ -112,12 +125,44 @@ class InterviewViewSet(GenericViewSet):
 
 
 
+	def interview_query_string(self,filterdata):
+		if "client" in filterdata:
+			filterdata["client__name"] = filterdata.pop("client")
 
-	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated,], )
-	def interview_list(self, request, **dict):
+		if "job" in filterdata:
+			filterdata["job__job_title"] = filterdata.pop("job")
+
+		if "candidate" in filterdata:
+			filterdata["candidate__email"] = filterdata.pop("candidate")
+
+		if "interview_round" in filterdata:
+			filterdata["interview_round__interview_round"] = filterdata.pop("interview_round")
+
+		if "interview_status" in filterdata:
+			filterdata["interview_status__status"] = filterdata.pop("interview_status")
+
+		if "location" in filterdata:
+			filterdata["location__icontains"] = filterdata.pop("location")
+
+		if "date_from" in filterdata:
+			filterdata["date__gte"] = filterdata.pop("date_from")
+
+		if "date_to" in filterdata:
+			filterdata["date__lte"] = filterdata.pop("date_to")
+		return filterdata
+
+
+
+	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated,],)
+	def interview_list(self, request,**dict):
+		"""
+		Returns all jd details
+		"""
 		try:
-			filter_data = request.query_params.dict()
-			serializer = self.get_serializer(self.services.interview_filter_service(filter_data), many=True)
+			filterdata = self.interview_query_string(request.query_params.dict())
+			page = self.paginator.get_page(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page, many=True)
+
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
 			raise

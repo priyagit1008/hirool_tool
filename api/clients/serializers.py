@@ -159,19 +159,22 @@ class JobGetSerializer(serializers.ModelSerializer):
 
 
 class JobListSerializer(serializers.ModelSerializer):
+    client=clientGetSerializer()
 
     class Meta:
         model = Job
+        # fields = '__all__'
         # Tuple of serialized model fields (see link [2])
 
         fields = (
-          'id','client_id', 'job_title', 'jd_url', 'tech_skills', 'job_location', 'job_type',
+          'id','client', 'job_title', 'jd_url', 'tech_skills', 'job_location', 'job_type',
             'min_exp', 'max_exp', 'min_notice_period', 'max_notice_period', 'min_ctc', 'max_ctc',
             'qualification','percentage_criteria','status','jd_extra'
        
         )
+
    
-        read_only_fields = ('id',)
+        # read_only_fields = ('id',)
 
 
 class JobDrowpdownGetSerializer(serializers.Serializer):

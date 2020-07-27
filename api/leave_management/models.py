@@ -59,3 +59,6 @@ class  LeaveTracker(TimeStampedModel):
 		app_label = 'leave_management'
 		db_table = 'api_tracker'
 # Create your models here.
+
+
+

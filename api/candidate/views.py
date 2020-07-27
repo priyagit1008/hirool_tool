@@ -7,6 +7,8 @@ from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.template.loader import render_to_string
 import json 
+from django.core.paginator import Paginator
+
 # import win32com.client as client
 
 
@@ -31,7 +33,7 @@ from .serializers import (
 	CandidateListSerializer,
 	CandidateListSerializer,
 	CandidateUpdateSerializer,
-	# CandidateDropdownListSerializer,
+	CandidateSkillsDrowpdownGetSerializer,
 	)
 from .services import CandidateServices
 from libs.constants import (
@@ -55,6 +57,10 @@ class CandidateViewSet(GenericViewSet):
 	"""docstring for candidateViewset"""
 	permissions=(HiroolReadOnly,HiroolReadWrite)
 	services = CandidateServices()
+	queryset=Candidate.objects.all()
+	paginator = Paginator(queryset, 3)
+
+
 	filter_backends = (filters.OrderingFilter,)
 	parser_class = (FileUploadParser,)
 
@@ -68,8 +74,14 @@ class CandidateViewSet(GenericViewSet):
 			'candidate_list':CandidateListSerializer,
 			'candidate_get':CandidateListSerializer,
 			'candidate_update':CandidateUpdateSerializer,
-			# 'candidate_dropdown':CandidateDropdownListSerializer,
+			'candidate_skills_dropdown':CandidateSkillsDrowpdownGetSerializer,
 			}
+
+
+	def get_queryset(self,filterdata=None):
+		if filterdata:
+			self.queryset =Candidate.objects.filter(**filterdata)
+		return self.queryset
 
 	def get_serializer_class(self):
 		"""
@@ -99,14 +111,40 @@ class CandidateViewSet(GenericViewSet):
 
 		if candidate:
 
-			# msg_plain = render_to_string('email_message.txt',{"user":candidate.first_name})
-			# msg_html = render_to_string('email.html',{"user":candidate.first_name})
-			# send_mail('Hirool',msg_plain,settings.EMAIL_HOST_USER,[candidate.email],html_message=msg_html,)
+			msg_plain = render_to_string('email_message.txt',{"user":candidate.first_name})
+			msg_html = render_to_string('email.html',{"user":candidate.first_name})
+			send_mail('Hirool',msg_plain,settings.EMAIL_HOST_USER,[candidate.email],html_message=msg_html,)
 
 			return Response({'status':'Successfully added'},status=status.HTTP_201_CREATED)
 		return Response({"status": "Not Found"},status.HTTP_404_NOT_FOUND) 
 
 
+	def candidate_query_string(self,filterdata):
+		if "prefered_location" in filterdata:
+			filterdata["prefered_location__icontains"] = filterdata.pop("prefered_location")
+
+		if "tech_skills" in filterdata:
+			filterdata["tech_skills__icontains"] = filterdata.pop("tech_skills")
+
+		if "work_experience_from" in filterdata:
+			filterdata["work_experience__gte"] = filterdata.pop("work_experience_from")
+
+		if "work_experience_to" in filterdata:
+			filterdata["work_experience__lte"] = filterdata.pop("work_experience_to")
+
+		if "current_ctc" in filterdata:
+			filterdata["current_ctc__gte"] = filterdata.pop("current_ctc")
+
+		if "expected_ctc" in filterdata:
+			filterdata["expected_ctc__lte"] = filterdata.pop("expected_ctc")
+
+		if "notice_period_from" in filterdata:
+			filterdata["notice_period__gte"]  = filterdata.pop("notice_period_from")
+
+		if "notice_period_to" in filterdata:
+			filterdata["notice_period__lte"]  = filterdata.pop("notice_period_to")
+		
+		return filterdata
 		
 	
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
@@ -115,12 +153,13 @@ class CandidateViewSet(GenericViewSet):
 		Returns candidate list
 		"""
 		try:
-			filter_data=request.query_params.dict()
-			serializer=self.get_serializer(self.services.get_queryset_service(filter_data), many=True)
-			return Response(serializer.data,status.HTTP_200_OK)
+			filterdata = self.candidate_query_string(request.query_params.dict())
+			page = self.paginator.get_page(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page,many=True)
+			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
-
+			raise
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
@@ -162,20 +201,17 @@ class CandidateViewSet(GenericViewSet):
 
 
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
-	def candidate_dropdown(self,request):
+	def candidate_skills_dropdown(self,request):
 		"""
 		Returns single candidate details
 		"""
 		try:
-			id= request.GET.get('id', None)
-			if not id:
-				return Response({"status": "Failed", "message":"id is required"})
-			else:
-				serializer = self.get_serializer(self.services.get_candidate_service(id))
-				return Response(serializer.data,status.HTTP_200_OK)
+			filter_data = request.query_params.dict()
+			serializer = self.get_serializer(self.services.get_queryset_service(filter_data), many=True)
+			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
+			raise
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
-
 
 
 	@action(
@@ -187,18 +223,15 @@ class CandidateViewSet(GenericViewSet):
 		"""
 		Download candidate resume
 		"""
-		try:   
-			id=request.GET["id"]
-			print(id)
-			resume_name = Candidate.objects.get(id=id).resume
-			print(resume_name)
+		try:
+			candidate_id=request.GET["id"]
+			resume_name = Candidate.objects.get(id=candidate_id).resume
 			resume_path = os.path.join(MEDIA_ROOT,str(resume_name))
-			print(resume_path)
 			FilePointer = open(resume_path,'rb')
-			print(FilePointer)
 			response = HttpResponse((FilePointer),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-			print(response)
 			response['Content-Disposition'] = 'attachment; filename="%s.docx"' %(resume_name)
+			document.save(response)
+
 			return response
 		except Exception as e:
 			raise
@@ -206,10 +239,11 @@ class CandidateViewSet(GenericViewSet):
 
 
 
+
 	# @action(
-	# 	methods=['get'],
-	# 	detail= False,
-	# 	permission_classes=[],)
+	#   methods=['get'],
+	#   detail= False,
+	#   permission_classes=[],)
 	# def convert_to_pdf(filepath:str):
  #    """Save a pdf of a docx file."""    
  #    try:
