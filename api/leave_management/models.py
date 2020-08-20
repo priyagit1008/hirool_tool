@@ -55,6 +55,11 @@ class  LeaveTracker(TimeStampedModel):
 			setattr(self, key, value)
 		self.save()
 
+
+	# @property
+ #    def date_diff(self):
+ #        return (self.to_date - self.from_date).days
+
 	class Meta:
 		app_label = 'leave_management'
 		db_table = 'api_tracker'

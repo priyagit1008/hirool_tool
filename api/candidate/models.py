@@ -6,6 +6,7 @@ from django.contrib.postgres.fields import JSONField
 from libs.models import TimeStampedModel
 # import datetime
 import uuid
+from django.contrib.auth.models import UserManager
 
 # third party imports
 from model_utils import Choices
@@ -23,8 +24,6 @@ def user_directory_path(instance, filename):
 	# extension = filename[0-5]
 	return 'user_{0}/{1}.{2}'.format("resumes",instance.id,extension) 
 
-	# return 'user_{0}/{1}.{2}'.format("resumes",instance.id,extension)
-	# return 'user_{0}/{1}'.format("resumes",instance.id) 
 
 
 class Candidate(TimeStampedModel):
@@ -43,7 +42,7 @@ class Candidate(TimeStampedModel):
 	first_name=models.CharField(max_length=512,null= True,blank=False)
 	last_name=models.CharField(max_length=512,null= True,blank=True)
 	email = models.EmailField(max_length=128, unique=True, db_index=True, blank=False)
-	candidate_url = models.CharField(max_length=1024, default=None,	null = True, blank=True)
+	candidate_url = models.CharField(max_length=1024, default=None, null = True, blank=True)
 	mobile = models.BigIntegerField(
 		validators=[
 			MinValueValidator(5000000000),
@@ -72,21 +71,6 @@ class Candidate(TimeStampedModel):
 	resume= models.FileField(upload_to = user_directory_path,blank=True,null = True)
 	status=models.CharField(max_length=256,blank=True, choices=STATUS, default=STATUS.active)
 
-	# certification=JSONField(default={},max_length=100,blank=True)
-	# work_experience=models.FloatField(max_length=100,blank=False,default=None)
-	# previous_company=models.CharField(max_length=100,blank=False,default=None)
-	# prepared_location=JSONField(default={},max_length=100,blank=False)
-	# address = models.CharField(max_length=1024, default=None, null=False, blank=False)
-	# resume = models.FileField(upload_to = user_directory_path,blank=False, null=False)
-	# previous_ctc = models.FloatField(default=0.0)  # LPA
-	# expected_ctc = models.FloatField(default=1000.0)  # LPA
-
-	# notice_days=models.IntegerField(default=60)
-	# # is_already_on_notice= models.BooleanField(blank=True)
-	# tech_skills = JSONField(default={}, blank=True, null=True)
-	# status = models.CharField(max_length=256, choices=STATUS, default=STATUS.active)
-
-
 	def __str__(self):
 		return "{id}".format(id=self.id)
 
@@ -102,16 +86,6 @@ class Candidate(TimeStampedModel):
 		app_label = 'candidate'
 		db_table = 'api_candidate'
 
-
-# class Candidate_File(TimeStampedModel):
-#   id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#   file = models.FileField(blank=False, null=False)
-#   description = models.CharField(max_length=255)
-#   uploaded_at = models.DateTimeField(auto_now_add=True)
-
-
-
-
-
-
-	
+	# @property
+ #    def full_name(self):
+ #        return "{fn} {ln}".format(fn=self.first_name, ln=self.last_name)

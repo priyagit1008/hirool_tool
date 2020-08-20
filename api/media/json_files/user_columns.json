@@ -1,0 +1,57 @@
+[
+{
+"dataField" : "first_name",
+"text" : "First Name",
+"sort" : true
+},
+{
+"dataField" : "last_name",
+"text" : "Last Name",
+"sort" : true
+},
+{
+"dataField" : "email",
+"text" : "Email",
+"sort" : true
+},
+{
+"dataField" : "mobile",
+"text" : "Mobile No.",
+"sort" : true
+},
+{
+"dataField" : "joined_date",
+"text" : "Joined on",
+"sort" : true
+},
+{
+"dataField" : "designation",
+"text" : "Designation",
+"sort" : true
+},
+{
+"dataField" : "work_loc",
+"text" : "Work location",
+"sort" : true
+},
+{
+"dataField" : "reporting_to",
+"text" : "Reporting to",
+"sort" : true
+},
+{
+"dataField" : "resigned_date",
+"text" : "Resigned On",
+"sort" : true
+},
+{
+"dataField" : "exit_date",
+"text" : "Date of exit",
+"sort" : true
+},
+{
+"dataField" : "status",
+"text" : "Status",
+"sort" : true
+}
+]

@@ -95,7 +95,7 @@ class UserRegSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
 		
-		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic',
+		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic','password',
 			'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location','previous_company',
 			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to',)
 		# fields='__all__'
@@ -111,7 +111,7 @@ class UserRegSerializer(serializers.ModelSerializer):
 
 		return user
 
-class UserListSerialize(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
 	
 	class Meta:
 		model = User

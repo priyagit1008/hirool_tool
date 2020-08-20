@@ -1,20 +1,20 @@
-# from __future__ import absolute_import, unicode_literals
-# import os
-# from celery import Celery
+from __future__ import absolute_import, unicode_literals
+import os
+from celery import Celery
 
-# # set the default Django settings module for the 'celery' program.
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
-# # BROKER_URL = 'redis://localhost:6379/0'
-# app = Celery('hire_api')
+# set the default Django settings module for the 'celery' program.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
+# BROKER_URL = 'redis://localhost:6379/0'
+app = Celery('hire_api')
 
-# # Using a string here means the worker doesn't have to serialize
-# # the configuration object to child processes.
-# # - namespace='CELERY' means all celery-related configuration keys
-# #   should have a `CELERY_` prefix.
-# app.config_from_object('django.conf:settings', namespace='CELERY')
+# Using a string here means the worker doesn't have to serialize
+# the configuration object to child processes.
+# - namespace='CELERY' means all celery-related configuration keys
+#   should have a `CELERY_` prefix.
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# # Load task modules from all registered Django app configs.
-# app.autodiscover_tasks()
+# Load task modules from all registered Django app configs.
+app.autodiscover_tasks()
 
-# # Set default queue name
-# app.conf.task_default_queue = 'hire_queue'
+# Set default queue name
+app.conf.task_default_queue = 'hire_queue'

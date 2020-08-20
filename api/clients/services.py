@@ -23,8 +23,7 @@ class ClientServices:
 
 class JobServices:
 	"""docstring for JobService"""
-	# def get_queryset(self):
-	#   return Job.objects.all()
+	
 
 	def get_queryset(self,filter_data):
 		return Job.objects.filter(**filter_data)

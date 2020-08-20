@@ -21,6 +21,8 @@ from libs.constants import (
 )
 
 from libs.exceptions import ParseException
+from libs.pagination import StandardResultsSetPagination
+
 # app level imports
 from .models import  LeaveType,LeaveTracker
 
@@ -59,8 +61,8 @@ class LeaveTrackerViewSet(GenericViewSet):
 
 	filter_backends = (filters.OrderingFilter,)
 	authentication_classes = (TokenAuthentication,)
-	queryset = LeaveTracker.objects.all()
-	paginator = Paginator(queryset, 10)
+	queryset = LeaveTracker.objects.all().order_by('-created_at')
+	pagination_class = StandardResultsSetPagination
 
 	ordering_fields = ('id',)
 	ordering = ('id',)
@@ -128,7 +130,7 @@ class LeaveTrackerViewSet(GenericViewSet):
 				serializer = self.get_serializer(self.services.get_leave_service(id))
 				return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -139,7 +141,7 @@ class LeaveTrackerViewSet(GenericViewSet):
 			serializer = self.get_serializer(self.services.leave_filter_service(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -160,12 +162,24 @@ class LeaveTrackerViewSet(GenericViewSet):
 				serializer.save()    
 				return Response({"status":"updated Successfully"},status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
 
 	def leave_query_string(self,filterdata):
+		dictionary={}
+			 
+		if "leave_type" in filterdata:
+			dictionary["leave_type__leave_type"] = filterdata.pop("leave_type")
+		if "leave_status" in filterdata:
+			dictionary["leave_status__icontains"] = filterdata.pop("leave_status")
+		if "from_date" in filterdata:
+			dictionary["from_date__gte"] = filterdata.pop("from_date")
+		if "to_date" in filterdata:
+			dictionary["to_date__lte"] = filterdata.pop("to_date")
+		if "approved_by" in filterdata:
+			dictionary["approved_by__icontains"] = filterdata.pop("approved_by")
 
 
 		if "leave_type" in filterdata:
@@ -182,18 +196,19 @@ class LeaveTrackerViewSet(GenericViewSet):
 			
 		if "approved_by" in filterdata:
 			filterdata["approved_by__icontains"] = filterdata.pop("approved_by")
-		return filterdata
+		return dictionary
 
 
 	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated,], )
 	def leave_list(self, request, **dict):
 		try:
 			filterdata = self.leave_query_string(request.query_params.dict())
-			page = self.paginator.get_page(self.get_queryset(filterdata))
-			serializer = self.get_serializer(page, many=True)
-			return Response(serializer.data, status.HTTP_200_OK)
+			page = self.paginate_queryset(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page,many=True)
+
+			return self.get_paginated_response(serializer.data)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -273,7 +288,7 @@ class LeaveTypeViewSet(GenericViewSet):
 			serializer = self.get_serializer(self.services.LeaveType_filter_service(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -284,7 +299,7 @@ class LeaveTypeViewSet(GenericViewSet):
 			serializer = self.get_serializer(self.services.LeaveType_filter_service(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 

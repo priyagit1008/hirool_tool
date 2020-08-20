@@ -16,4 +16,3 @@ class CandidateServices:
 
 	def update_candidate_service(self,id):
 		return Candidate.objects.get(id = id)
-	

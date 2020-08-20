@@ -1,0 +1,13 @@
+
+[
+{
+"id":1,
+"value": "public",
+"label": "PUBLIC"
+},
+    {
+    "id":2,
+"value": "private",
+"label": "PRIVATE"
+    }
+]

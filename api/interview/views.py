@@ -1,6 +1,7 @@
 # Create your views here.
 # django imports
 from django.conf import settings
+import os,io
 
 from rest_framework import filters
 from rest_framework.decorators import action
@@ -14,6 +15,12 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 import json 
 from django.core.paginator import Paginator
+from django.core.exceptions import ValidationError
+
+import csv
+from api.default_settings import MEDIA_ROOT,JSON_MEDIA_ROOT
+
+
 
 
 # project level imports
@@ -22,6 +29,8 @@ from libs.constants import (
 	BAD_ACTION,
 )
 from libs.exceptions import ParseException
+from libs.pagination import StandardResultsSetPagination
+
 
 # app level imports
 from .models import Interview, InterviewRound, InterviewStatus
@@ -53,8 +62,10 @@ class InterviewViewSet(GenericViewSet):
 	"""docstring for ClassName"""
 	permissions = (HiroolReadOnly, HiroolReadWrite)
 	services = InterviewServices()
-	queryset=Interview.objects.all()
-	paginator = Paginator(queryset, 10)
+	queryset=Interview.objects.all().order_by('-created_at')
+	pagination_class = StandardResultsSetPagination
+
+	# paginator = Paginator(queryset, 10)
 
 
 
@@ -80,7 +91,7 @@ class InterviewViewSet(GenericViewSet):
 	def get_queryset(self,filterdata=None):
 		if filterdata:
 			self.queryset = Interview.objects.filter(**filterdata)
-			print(Interview.objects.filter(**filterdata))
+
 		return self.queryset
 
 	def get_serializer_class(self):
@@ -97,7 +108,7 @@ class InterviewViewSet(GenericViewSet):
 
 		serializer = self.get_serializer(data=request.data)
 		if serializer.is_valid() is False:
-			print(serializer.errors)
+
 			raise ParseException({'status':'Incorrect Input'}, serializer.errors)
 		interview = serializer.create(serializer.validated_data)
 
@@ -119,13 +130,37 @@ class InterviewViewSet(GenericViewSet):
 		try:
 			serializer = self.get_serializer(self.services.get_interview_service(id))
 		except Interview.DoesNotExist:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 		return Response(serializer.data, status.HTTP_200_OK)
 
 
 
 	def interview_query_string(self,filterdata):
+		dictionary={}
+			 
+		if "client" in filterdata:
+			dictionary["client__name"] = filterdata.pop("client")
+		if "job" in filterdata:
+			dictionary["job__job_title"] = filterdata.pop("job")
+		if "candidate" in filterdata:
+			dictionary["candidate__email"] = filterdata.pop("candidate")
+		if "interview_round" in filterdata:
+			dictionary["interview_round__interview_round"] = filterdata.pop("interview_round")
+		if "interview_status" in filterdata:
+			dictionary["interview_status__status"] = filterdata.pop("interview_status")
+		if "location" in filterdata:
+			dictionary["location__icontains"] = filterdata.pop("location")
+		if "date_from" in filterdata:
+			dictionary["date__gte"] = filterdata.pop("date_from")
+		if "date_to" in filterdata:
+			dictionary["date__lte"] = filterdata.pop("date_to")
+		# if "job" in filterdata:
+		# 	dictionary["job__job_title"] = filterdata.pop("job")
+		# if "job" in filterdata:
+		# 	dictionary["job__job_title"] = filterdata.pop("job")
+
+
 		if "client" in filterdata:
 			filterdata["client__name"] = filterdata.pop("client")
 
@@ -149,7 +184,7 @@ class InterviewViewSet(GenericViewSet):
 
 		if "date_to" in filterdata:
 			filterdata["date__lte"] = filterdata.pop("date_to")
-		return filterdata
+		return dictionary
 
 
 
@@ -160,12 +195,12 @@ class InterviewViewSet(GenericViewSet):
 		"""
 		try:
 			filterdata = self.interview_query_string(request.query_params.dict())
-			page = self.paginator.get_page(self.get_queryset(filterdata))
-			serializer = self.get_serializer(page, many=True)
+			page = self.paginate_queryset(self.get_queryset(filterdata))
+			serializer = self.get_serializer(page,many=True)
 
-			return Response(serializer.data, status.HTTP_200_OK)
+			return self.get_paginated_response(serializer.data)
 		except Exception as e:
-			raise
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -187,7 +222,7 @@ class InterviewViewSet(GenericViewSet):
 				serializer.save()    
 				return Response({"status":"updated Successfully"},status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
@@ -204,7 +239,7 @@ class InterviewViewSet(GenericViewSet):
 		try:
 			interview_obj = self.services.get_interview_service(id)
 		except Interview.DoesNotExist:
-			raise
+			
 			return Response({"status": False}, status.HTTP_404_NOT_FOUND)
 		interview_obj.delete()
 		return Response({"status":"interview is deleted "}, status.HTTP_200_OK)
@@ -215,34 +250,65 @@ class InterviewViewSet(GenericViewSet):
 		permission_classes=[IsAuthenticated,],
 		)
 	def interview_columns(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/interview_columns.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_columns.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
 
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
 	def interview_status(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/interview_status.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_status.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
+
 
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
 	def interview_round(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/interview_round.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_round.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
+
+
+
+	@action(
+		methods=['get'],
+		detail=False,permission_classes=[],
+	)
+	def interview_bulk_uplode(self,request):
+		# fileForInput = open('sample.csv','r')
+		# print(request.object)
+		f=request.FILES['file']		
+		decode= f.read().decode('utf-8').splitlines()
+
+		try:
+			dr=csv.DictReader(decode)
+			cand=Job()
+			interviews=[]
+			for row in dr:
+
+				interview_obj=Interview(**row)
+				try:
+					interview_obj.full_clean()
+				except ValidationError:
+					continue
+				interviews.append(interview_obj)
+
+			d1=(len(interviews))
+			data=Interview.objects.bulk_create(interviews)
+			return Response({"status":"Successfully inserted","total jobs":d1},status=status.HTTP_201_CREATED)
+		except Exception as e:
+			
+			return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+
 
 
 

@@ -132,6 +132,9 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+JSON_MEDIA_ROOT=os.path.join(BASE_DIR,"media/json_files/")
+print(JSON_MEDIA_ROOT)
+# print(BASE_DIR)
 
 # export LANG ="en_US.UTF-8"
 LANG="en_AU.UTF-8"
@@ -203,8 +206,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.DESIRED_PAGINATION_STYLE',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'PAGE_SIZE': 1,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 # Admin Login URL
@@ -453,6 +456,21 @@ REDIS_CONFIG = {
 
 SMS_CONFIG = {
     "HOST" : ""
+}
+
+# APPEND_SLASH=False
+
+CACHE_TTL = 60 * 15
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
 }
 
 # ANYMAIL = {

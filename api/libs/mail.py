@@ -16,13 +16,18 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def sendmail(message,subject,tolist):
-
-	# send_mail('otp generating','Registration succesfull','priyapatil1421997@gmail.com',[email],fail_silently=False,)
+	# try:
+	# 	send_mail('otp generating','Registration succesfull','priyapatil1421997@gmail.com',[email],fail_silently=False,)
+	# 	return Response("mail sent")
+	# except:
+	# 	return Response("mail is failed")
 	try:
-		send_mail(subject, message, EMAIL_HOST_USER,tolist)
+		send_mail(subject, message, EMAIL_HOST_USER, tolist)
 		logger.info("Mail Sent ")
-		return True
+		
+		return 1
 	except:
-		print ("email not recived")
+
 		logger.error("Sending mail is failed", exc_info=True)
-		return False
+		return 0
+

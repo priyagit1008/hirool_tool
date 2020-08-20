@@ -1,3 +1,5 @@
+# django imports
+
 import unicodedata
 import os,io
 from django.conf import settings
@@ -6,13 +8,15 @@ from django.contrib.auth.decorators import permission_required
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.template.loader import render_to_string
+from django.core.exceptions import ValidationError
+import fileinput 
+
 import json 
+import requests
+import csv
+
 from django.core.paginator import Paginator
-
-# import win32com.client as client
-
-
-
+from django.core.files import File
 from rest_framework import filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -27,6 +31,12 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from .models import Candidate
+from django.db import models
+
+
+
+# app level imports
+
 from accounts.users.permissions import HiroolReadOnly,HiroolReadWrite
 from .serializers import (
 	CandidateCreateRequestSerializer,
@@ -41,15 +51,18 @@ from libs.constants import (
 		BAD_ACTION,
 		
 )
+from libs.pagination import StandardResultsSetPagination
+
 from libs import (
 				# redis_client,
 				otpgenerate,
 				mail,
 				)
-from api.default_settings import MEDIA_ROOT 
+from api.default_settings import MEDIA_ROOT,JSON_MEDIA_ROOT
 
 from libs.exceptions import ParseException
 import codecs 
+
 
 # Create your views here.
 
@@ -57,8 +70,9 @@ class CandidateViewSet(GenericViewSet):
 	"""docstring for candidateViewset"""
 	permissions=(HiroolReadOnly,HiroolReadWrite)
 	services = CandidateServices()
-	queryset=Candidate.objects.all()
-	paginator = Paginator(queryset, 3)
+	queryset=Candidate.objects.all().order_by('-created_at')
+	pagination_class = StandardResultsSetPagination
+
 
 
 	filter_backends = (filters.OrderingFilter,)
@@ -99,7 +113,6 @@ class CandidateViewSet(GenericViewSet):
 		"""
 		serializer = self.get_serializer(data=request.data)
 		if not serializer.is_valid():
-			print(serializer.errors)
 
 			raise ParseException({'status':'Incorrect Input'}, serializer.errors)
 
@@ -120,6 +133,32 @@ class CandidateViewSet(GenericViewSet):
 
 
 	def candidate_query_string(self,filterdata):
+		dictionary={}
+			 
+		if "prefered_location" in filterdata:
+			dictionary["prefered_location__icontains"] = filterdata.pop("prefered_location")
+
+		if "tech_skills" in filterdata:
+			dictionary["tech_skills__icontains"] = filterdata.pop("tech_skills")
+
+
+		if "work_experience_from" in filterdata:
+			dictionary["work_experience__gte"] = filterdata.pop("work_experience_from")
+
+		if "work_experience_to" in filterdata:
+			dictionary["work_experience__lte"] = filterdata.pop("work_experience_to")
+		if "current_ctc" in filterdata:
+			dictionary["current_ctc__gte"] = filterdata.pop("current_ctc")
+		if "expected_ctc" in filterdata:
+			dictionary["expected_ctc__lte"] = filterdata.pop("expected_ctc")
+		if "notice_period_from" in filterdata:
+			dictionary["notice_period__gte"] = filterdata.pop("notice_period_from")
+		if "notice_period_to" in filterdata:
+			dictionary["notice_period__lte"] = filterdata.pop("notice_period_to")
+
+
+
+
 		if "prefered_location" in filterdata:
 			filterdata["prefered_location__icontains"] = filterdata.pop("prefered_location")
 
@@ -144,7 +183,8 @@ class CandidateViewSet(GenericViewSet):
 		if "notice_period_to" in filterdata:
 			filterdata["notice_period__lte"]  = filterdata.pop("notice_period_to")
 		
-		return filterdata
+		return dictionary
+
 		
 	
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
@@ -154,11 +194,12 @@ class CandidateViewSet(GenericViewSet):
 		"""
 		try:
 			filterdata = self.candidate_query_string(request.query_params.dict())
-			page = self.paginator.get_page(self.get_queryset(filterdata))
+			# page_result = self.candidate_query_set(filterdata)
+			page = self.paginate_queryset(self.get_queryset(filterdata))
 			serializer = self.get_serializer(page,many=True)
-			return Response(serializer.data, status.HTTP_200_OK)
+
+			return self.get_paginated_response(serializer.data)
 		except Exception as e:
-			raise
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -173,7 +214,6 @@ class CandidateViewSet(GenericViewSet):
 		try:
 			serializer = self.get_serializer(self.services.get_candidate_service(id))
 		except Candidate.DoesNotExist:
-			raise
 			return Response({"status": False}, status.HTTP_404_NOT_FOUND)
 		return Response(serializer.data, status.HTTP_200_OK)
 
@@ -190,13 +230,11 @@ class CandidateViewSet(GenericViewSet):
 			id=data["id"]
 			serializer=self.get_serializer(self.services.update_candidate_service(id),data=request.data)
 			if not serializer.is_valid():
-				print(serializer.errors)
 				raise ParseException(BAD_REQUEST,serializer.errors)
 			else:
 				serializer.save()    
 				return Response({"status":"updated Successfully"},status.HTTP_200_OK)
 		except Exception as e:
-			raise
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
@@ -210,7 +248,6 @@ class CandidateViewSet(GenericViewSet):
 			serializer = self.get_serializer(self.services.get_queryset_service(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -219,7 +256,7 @@ class CandidateViewSet(GenericViewSet):
 		detail= False,
 		permission_classes=[IsAuthenticated,],
 		)
-	def download_file(self,request, encoding='utf8'):
+	def download_file(self,request, encoding='utf-8'):
 		"""
 		Download candidate resume
 		"""
@@ -230,66 +267,44 @@ class CandidateViewSet(GenericViewSet):
 			FilePointer = open(resume_path,'rb')
 			response = HttpResponse((FilePointer),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 			response['Content-Disposition'] = 'attachment; filename="%s.docx"' %(resume_name)
-			document.save(response)
 
 			return response
 		except Exception as e:
-			raise
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
-
-
-
-	# @action(
-	#   methods=['get'],
-	#   detail= False,
-	#   permission_classes=[],)
-	# def convert_to_pdf(filepath:str):
- #    """Save a pdf of a docx file."""    
- #    try:
- #        word = client.DispatchEx("Word.Application")
- #        target_path = filepath.replace(".docx", r".pdf")
- #        word_doc = word.Documents.Open(filepath)
- #        word_doc.SaveAs(target_path, FileFormat=17)
- #        word_doc.Close()
- #    except Exception as e:
- #            raise e
- #    finally:
- #            word.Quit()
-	
 
 
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
 	def candidate_columns(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/candidate_columns.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('candidate_columns.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
+
 
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
 	def skills_dropdown(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/skills_dropdown.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('skills_dropdown.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
+		# myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/skills_dropdown.json','r')
+		
 
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
 	def prepared_location(self, request):
-		myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/prepared_location.json','r')
+		file_path = os.path.join(JSON_MEDIA_ROOT,str('prepared_location.json'))
+		myfile= open(file_path,'r')
 		jsondata = myfile.read()
 		obj = json.loads(jsondata)
-		print(str(obj))
-		print("hi")
 		return Response(obj)
 
 	
@@ -309,3 +324,170 @@ class CandidateViewSet(GenericViewSet):
 			return Response("hi")
 		except Exception as e:
 			return Response({"status": str(e)}, status.HTTP_404_NOT_FOUND)
+
+
+
+	@action(
+		methods=['get'],
+		detail= False,
+		permission_classes=[IsAuthenticated,],
+		)
+	def download_csv_file(self,request, encoding='utf-8'):
+		"""
+		Download candidate resume
+		"""
+		try:
+			file_path = os.path.join(MEDIA_ROOT,str('sample.csv'))
+			FilePointer = open(file_path,'r')
+			response = HttpResponse((FilePointer),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+			response['Content-Disposition'] = 'attachment; filename="%s"' %('sample.csv')
+
+			return response
+		except Exception as e:
+			
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
+
+
+	@action(
+		methods=['get'],
+		detail=False,permission_classes=[],
+	)
+	def csv_fil_reader(self,request):
+		# fileForInput = open('sample.csv','r')
+		# print(request.object)
+		f=request.FILES['file']
+		file = f.read().decode('utf-8').splitlines()
+
+		try:
+			dr=csv.DictReader(file)
+			cand=Candidate()
+			candidates=[]
+			for row in dr:
+				candidate_obj=Candidate(**row)
+				try:
+					candidate_obj.full_clean()
+				except ValidationError:
+					continue
+				candidates.append(candidate_obj)
+
+			d1=(len(candidates))
+			data=Candidate.objects.bulk_create(candidates)
+			return Response({"status":"Successfully inserted","total candidates":d1},status=status.HTTP_201_CREATED)
+		except Exception as e:
+
+			return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+
+
+
+		# try:
+		# 	with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:
+		# 		dr=csv.DictReader(file)
+		# 		cand=Candidate()
+		# 		candidates=[]
+		# 		for row in dr:
+		# 			print(row)
+		# 			candidate_obj=Candidate(**row)
+		# 			try:
+		# 				candidate_obj.full_clean()
+		# 			except ValidationError:
+		# 				continue
+		# 			candidates.append(candidate_obj)
+		# 		data=Candidate.objects.bulk_create(candidates)
+		# 		return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
+		# except Exception as e:
+		# 	raise
+		# 	return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+
+
+
+#------------------------------------**************************************------------------------------------------------------------------------------------#
+
+		# with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as f:
+		# 	try:
+		# 		dire=csv.reader(f)
+		# 		cd=[]
+		# 		for row in dire:
+		# 			print(row)
+		# 		return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
+		# 	except Exception as e:
+		# 		raise
+		# 		return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+
+
+			# with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:
+
+			# license = SubscriptionLicense(
+   #      )
+
+
+
+
+				# candidate=Candidate(**row)
+				# data=Candidate.objects.bullk_create(list)
+				
+
+ 
+  #       for row in reader:
+  #           city = City(**row)
+  #           print(city)
+		# try:
+		#   with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:
+		#       dr=csv.DictReader(file)
+		#       print(dr)
+		#       list=[]
+		#       user=(**user)
+		#       user.full_clean()
+		#       user.append(list)
+		#       candidate.objects.bullk_create(list)
+		#       return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
+		# except ValidationError as e:
+		#   continue
+		#   return Response({"status": str(e)}, status.HTTP_404_NOT_FOUND)
+# try:
+#   list=[]
+#   user=(**user)
+#   user.full_clean()
+#   user.append(list)
+#   candidate.objects.bullk_create(list)
+# except:
+#  validation.errors
+#  continoue    
+
+# #                         # dob=row[5],
+# #                         # gender=row[6],
+# #                         # sslc_marks=row[7],
+# #                         # puc_marks=row[8],
+# #                         # bachelor_degree=row[9],
+# #                         # bachelor_degree_course=row[10],
+# #                         # bachelor_degree_marks=row[11],
+# #                         # master_degree=row[12],
+# #                         # master_degree_course=row[13],
+# #                         # master_degree_marks=row[14],
+# #                         # address=row[15],
+# #                         # tech_skills=row[16],
+# #                         # prefered_location=row[17],
+# #                         # previous_company=row[18],
+# #                         # work_experience=row[19],
+# #                         # current_ctc=row[20],
+# #                         # expected_ctc=row[21],
+# #                         # notice_period=row[22],
+# #                         # resume= row[23],
+# #                         # status=row[24]
+					   
+				
+
+				# print(data)
+			# print(i['first_name'])
+			# print(to_db)
+			# print(dr)
+
+			# to_db = [(i['col1'], i['col2']) for i in dr]
+
+
+			
