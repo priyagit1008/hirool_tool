@@ -1,0 +1,30 @@
+## INTERMEDIATE IMAGE ##
+
+FROM python:3.6 as intermediate
+
+ARG GIT_ACCESS_TOKEN
+
+RUN git clone https://x-access-token:${GIT_ACCESS_TOKEN}@github.com/sachugit/hire-api.git /hire-api/
+
+RUN pip install -r /hire-api/requirements/docker-requirements.txt
+
+## FINAL IMAGE ##
+
+FROM python:3.6
+
+ENV PYTHONUNBUFFERED 1
+
+# to copy the python packages installed
+COPY --from=intermediate /usr/local/ /usr/local/
+
+# to copy source of py-commons
+COPY --from=intermediate /src /src
+
+# to copy main project directory
+COPY --from=intermediate /hire-api/ /hire-api/
+
+WORKDIR /hire-api/api/
+
+RUN mkdir /var/log/hire_api/
+
+ENTRYPOINT ["bash", "start.sh"]
