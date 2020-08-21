@@ -76,12 +76,12 @@ class ClientViewSet(GenericViewSet):
 	http_method_names = ['get', 'post', 'put']
 
 	serializers_dict = {
-		'org': ClientCreateRequestSerializer,
-		'org_details': ClientCreateRequestSerializer,
-		'org_list': ClientListSerializer,
-		'org_dropdown_list':ClientDrowpdownGetSerializer,
-		'org_update': ClientUpdateSerializer,
-		'org_get':ClientListSerializer,
+		'client_add': ClientCreateRequestSerializer,
+		'client_details': ClientCreateRequestSerializer,
+		'client_list': ClientListSerializer,
+		'client_dropdown_list':ClientDrowpdownGetSerializer,
+		'client_update': ClientUpdateSerializer,
+		'client_get':ClientListSerializer,
 		'delete_client': ClientListSerializer,
 
 	}
@@ -103,7 +103,7 @@ class ClientViewSet(GenericViewSet):
 
 
 	@action(methods=['post'], detail=False, permission_classes=[IsAuthenticated,],)
-	def org(self, request):
+	def client_add(self, request):
 		"""
 		Returns clients account creations
 		"""
@@ -123,7 +123,7 @@ class ClientViewSet(GenericViewSet):
 
 
 	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ],)
-	def org_details(self, request):
+	def client_details(self, request):
 		"""
 		Returns client details
 		"""
@@ -165,7 +165,7 @@ class ClientViewSet(GenericViewSet):
 		# url_path='image-upload',
 		permission_classes=[IsAuthenticated, ],
 	)
-	def org_list(self, request,**dict):
+	def client_list(self, request,**dict):
 		"""
 		Return user list data and groups
 		"""
@@ -186,7 +186,7 @@ class ClientViewSet(GenericViewSet):
 		# url_path='image-upload',
 		permission_classes=[IsAuthenticated, ],
 	)
-	def org_dropdown_list(self, request, **dict):
+	def client_dropdown_list(self, request, **dict):
 		"""
 		Return user list data and groups
 		"""
@@ -199,7 +199,7 @@ class ClientViewSet(GenericViewSet):
 
 
 	@action(methods=['get','put'], detail=False, permission_classes=[IsAuthenticated, ],)
-	def org_update(self,request):
+	def client_update(self,request):
 		"""
 		Returns client update
 		"""
@@ -223,7 +223,7 @@ class ClientViewSet(GenericViewSet):
 		# url_path='image-upload',
 		permission_classes=[IsAuthenticated,],
 	)
-	def org_get(self, request):
+	def client_get(self, request):
 		"""
 		Return client singal data and groups
 		"""
@@ -295,7 +295,7 @@ class ClientViewSet(GenericViewSet):
 		methods=['get'],
 		detail=False,permission_classes=[],
 	)
-	def csv_fil_reader(self,request):
+	def client_bulk_uplode(self,request):
 		# fileForInput = open('sample.csv','r')
 		# print(request.object)
 		f=request.FILES['file']
@@ -352,7 +352,7 @@ class JobViewSet(GenericViewSet):
 	http_method_names = ['get', 'post', 'put']
 
 	serializers_dict = {
-		'job': JobCreateRequestSerializer,
+		'job_add': JobCreateRequestSerializer,
 		'job_get': JobGetSerializer,
 		'job_list': JobListSerializer,
 		'job_update':JobUpdateSerilaizer,
@@ -382,7 +382,7 @@ class JobViewSet(GenericViewSet):
 
 
 	@action(methods=['post'], detail=False, permission_classes=[IsAuthenticated, ],)
-	def job(self, request):
+	def job_add(self, request):
 		"""
 		Returns jd details
 		"""

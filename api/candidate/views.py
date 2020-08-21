@@ -84,7 +84,7 @@ class CandidateViewSet(GenericViewSet):
 	http_method_names = ['get', 'post', 'put']
 
 	serializers_dict={
-			'candidate':CandidateCreateRequestSerializer,
+			'candidate_Registration':CandidateCreateRequestSerializer,
 			'candidate_list':CandidateListSerializer,
 			'candidate_get':CandidateListSerializer,
 			'candidate_update':CandidateUpdateSerializer,
@@ -107,7 +107,7 @@ class CandidateViewSet(GenericViewSet):
 
 
 	@action(methods=['post'], detail=False, permission_classes=[IsAuthenticated,],)
-	def candidate(self,request):
+	def candidate_Registration(self,request):
 		"""
 		Returns candidate account creation
 		"""
@@ -256,7 +256,7 @@ class CandidateViewSet(GenericViewSet):
 		detail= False,
 		permission_classes=[IsAuthenticated,],
 		)
-	def download_file(self,request, encoding='utf-8'):
+	def resume_download(self,request, encoding='utf-8'):
 		"""
 		Download candidate resume
 		"""
@@ -288,7 +288,7 @@ class CandidateViewSet(GenericViewSet):
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
-	def skills_dropdown(self, request):
+	def candidate_skills_dropdown(self, request):
 		file_path = os.path.join(JSON_MEDIA_ROOT,str('skills_dropdown.json'))
 		myfile= open(file_path,'r')
 		jsondata = myfile.read()
@@ -300,7 +300,7 @@ class CandidateViewSet(GenericViewSet):
 	@action(methods=['get', 'patch'],detail=False,
 		permission_classes=[IsAuthenticated,],
 		)
-	def prepared_location(self, request):
+	def candidate_prepared_location(self, request):
 		file_path = os.path.join(JSON_MEDIA_ROOT,str('prepared_location.json'))
 		myfile= open(file_path,'r')
 		jsondata = myfile.read()
@@ -332,7 +332,7 @@ class CandidateViewSet(GenericViewSet):
 		detail= False,
 		permission_classes=[IsAuthenticated,],
 		)
-	def download_csv_file(self,request, encoding='utf-8'):
+	def candidate_bulk_file_format(self,request, encoding='utf-8'):
 		"""
 		Download candidate resume
 		"""
@@ -353,7 +353,7 @@ class CandidateViewSet(GenericViewSet):
 		methods=['get'],
 		detail=False,permission_classes=[],
 	)
-	def csv_fil_reader(self,request):
+	def candidate_bulk_uplode(self,request):
 		# fileForInput = open('sample.csv','r')
 		# print(request.object)
 		f=request.FILES['file']

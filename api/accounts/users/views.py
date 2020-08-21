@@ -16,6 +16,7 @@ import os,io
 
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -105,11 +106,11 @@ class UserViewSet(GenericViewSet):
 	serializers_dict = {
 		'login': UserLoginRequestSerializer,
 		'register': UserRegSerializer,
-		'list_exec': UserListSerializer,
-		'exec_get': UserListSerializer,
-		'exec_update': UserUpdateRequestSerializer,
+		'user_list': UserListSerializer,
+		'user_get': UserListSerializer,
+		'user_update': UserUpdateRequestSerializer,
 		'forgotpass': UserPassUpdateSerializer,
-		'update_pass': UserPassUpdateSerializer,
+		'update_password': UserPassUpdateSerializer,
 		'user_profile':UserListSerializer, 
 		'user_dropdown':UserDrowpdownGetSerializer ,
 		'delete_user':UserListSerializer
@@ -246,7 +247,7 @@ class UserViewSet(GenericViewSet):
 	)
 
 
-	def list_exec(self, request,**dict):
+	def user_list(self, request,**dict):
 		"""
 		Return user list data and groups
 		"""
@@ -320,7 +321,7 @@ class UserViewSet(GenericViewSet):
 		# url_path='image-upload',
 		permission_classes=[IsAuthenticated, ],
 	)
-	def exec_update(self, request):
+	def user_update(self, request):
 		"""
 		Return user update data
 		"""
@@ -342,7 +343,7 @@ class UserViewSet(GenericViewSet):
 
 
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated],)
-	def exec_get(self,request):
+	def user_get(self,request):
 		"""
 		Returns single candidate details
 		"""
@@ -451,7 +452,7 @@ class UserViewSet(GenericViewSet):
 		detail=False,
 		permission_classes=[IsAuthenticated, ],
 	)
-	def update_pass(self, request):
+	def update_password(self, request):
 		"""
 		update new password with validatig old password
 		"""
