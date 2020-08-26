@@ -10,10 +10,10 @@ class HiroolReadOnly(permissions.BasePermission):
 
 	def has_permission(self, request, view):
 		if (request.method in permissions.SAFE_METHODS):
-			print(view.action)
+			# print(view.action)
 			action_obj = Actions.objects.get(action_name = view.action)
-			print(action_obj.id)
-			print(request.user.id)
+			# print(action_obj.id)
+			# print(request.user.id)
 			# permission_obj = Permissions.objects.get(permissions = permission)
 			if UserPermissions.objects.filter(user=request.user.id,actions=action_obj.id).exists():
 				# print(data)

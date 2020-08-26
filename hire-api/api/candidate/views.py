@@ -187,7 +187,7 @@ class CandidateViewSet(GenericViewSet):
 
 		
 	
-	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
+	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,HiroolReadOnly],)
 	def candidate_list(self,request,**dict):
 		"""
 		Returns candidate list

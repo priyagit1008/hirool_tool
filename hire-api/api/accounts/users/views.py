@@ -837,7 +837,7 @@ class ActionViewSet(GenericViewSet):
 
 
 	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ], )
-	def list_permission(self, request):
+	def list_actions(self, request):
 		"""
 		Return user profile data and groups
 		"""

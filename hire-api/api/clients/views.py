@@ -163,7 +163,7 @@ class ClientViewSet(GenericViewSet):
 		methods=['get'],
 		detail=False,
 		# url_path='image-upload',
-		permission_classes=[IsAuthenticated, ],
+		permission_classes=[IsAuthenticated,HiroolReadOnly, ],
 	)
 	def client_list(self, request,**dict):
 		"""

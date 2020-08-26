@@ -206,7 +206,7 @@ class InterviewViewSet(GenericViewSet):
 
 
 
-	@action(methods=['put'], detail=False, permission_classes=[IsAuthenticated,], )
+	@action(methods=['put'], detail=False, permission_classes=[IsAuthenticated,HiroolReadOnly], )
 	def interview_update(self, request):
 		"""
 		Return user profile data and groups
