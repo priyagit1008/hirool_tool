@@ -34,7 +34,9 @@ SECRET_KEY = '2)huh6&33c9l00jlva!us%lq@np#n0e=*(j5pt_2*42@&a4b%i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+
+ALLOWED_HOSTS = ['localhost','68.183.90.241']
+
 
 
 # Application definition
@@ -64,6 +66,7 @@ LOCAL_APPS = [
     'candidate',
     'gunicorn',
     'clients',
+    'jobs',
     'interview',
     'libs',
     'leave_management',
@@ -75,39 +78,6 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # INSTALLED_APPS += ('kombu.transport.django', )
 
-# MIDDLEWARE = [
-#     'django.middleware.security.SecurityMiddleware',
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'django.middleware.common.CommonMiddleware',
-#     'django.middleware.csrf.CsrfViewMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#     'reversion.middleware.RevisionMiddleware'
-# ]
-
-
-# MIDDLEWARE = [
-#     'django.middleware.security.SecurityMiddleware',
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'django.middleware.common.CommonMiddleware',
-#     'django.middleware.csrf.CsrfViewMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-# ]
-
-
-# MIDDLEWARE_CLASSES = (
-# 'django.contrib.sessions.middleware.SessionMiddleware',
-# 'django.middleware.common.CommonMiddleware',
-# 'django.middleware.csrf.CsrfViewMiddleware',
-# 'django.contrib.auth.middleware.AuthenticationMiddleware',
-# 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-# 'django.contrib.messages.middleware.MessageMiddleware',
-# 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-# 'django.middleware.security.SecurityMiddleware',
-# )
 
 
 MIDDLEWARE = [
@@ -123,7 +93,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
+    "http://68.183.90.241",
 ]
 
 X_FRAME_OPTIONS = 'ALLOWALL'
@@ -133,8 +103,7 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 JSON_MEDIA_ROOT=os.path.join(BASE_DIR,"media/json_files/")
-print(JSON_MEDIA_ROOT)
-# print(BASE_DIR)
+STATIC_ROOT = os.path.join(BASE_DIR, "static/json_files")
 
 # export LANG ="en_US.UTF-8"
 LANG="en_AU.UTF-8"

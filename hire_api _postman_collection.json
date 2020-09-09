@@ -1,0 +1,3385 @@
+{
+	"info": {
+		"_postman_id": "7d79e928-1bce-40e4-ae2e-5de802f7a00f",
+		"name": "hire_api copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-app-version",
+								"value": "123",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "asd2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345680",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "pooja",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "patil",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "9907559906",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "02-03-1997",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "F",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "1 Main anagole",
+									"type": "text"
+								},
+								{
+									"key": "qualification",
+									"value": "Bca",
+									"type": "text"
+								},
+								{
+									"key": "specialization",
+									"value": "CS",
+									"type": "text"
+								},
+								{
+									"key": "marks",
+									"value": "80",
+									"type": "text"
+								},
+								{
+									"key": "passing_year",
+									"value": "2019",
+									"type": "text"
+								},
+								{
+									"key": "college",
+									"value": "GIT",
+									"type": "text"
+								},
+								{
+									"key": "work_experience",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "\"python,java\"",
+									"type": "text"
+								},
+								{
+									"key": "designation",
+									"value": "accounts,finance",
+									"type": "text"
+								},
+								{
+									"key": "anual_salary",
+									"value": "100000",
+									"type": "text"
+								},
+								{
+									"key": "work_location",
+									"value": "puna",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"type": "text"
+								},
+								{
+									"key": "image_url",
+									"type": "file",
+									"src": "/home/priya/Desktop/handshake.png"
+								},
+								{
+									"key": "joined_date",
+									"value": "20-03-2020",
+									"type": "text"
+								},
+								{
+									"key": "resigned_date",
+									"value": "2-05-2020",
+									"type": "text"
+								},
+								{
+									"key": "exit_date",
+									"value": "22-07-2020",
+									"type": "text"
+								},
+								{
+									"key": "reporting_to",
+									"value": "sachin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}accounts/register/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b2c59e1c-5d32-4783-87c6-afb42a0a5b56",
+								"exec": [
+									"pm.test(\"loginTest\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    postman.setEnvironmentVariable(\"token\", jsonData.token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-app-version",
+								"value": "111",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{       \"email\": \"asd1@gmail.com\",\n\t\"password\":\"12345680\"\t\n}"
+						},
+						"url": {
+							"raw": "{{url}}accounts/login/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_all_user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}accounts/user_list/?page=1",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"user_list",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5ea16bc8-26d1-49fd-baf1-926ce665cb63",
+									"disabled": true
+								},
+								{
+									"key": "designation",
+									"value": "finance",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"disabled": true
+								},
+								{
+									"key": "qualification",
+									"value": "Bcom",
+									"disabled": true
+								},
+								{
+									"key": "reporting_to",
+									"value": "sachin",
+									"disabled": true
+								},
+								{
+									"key": "resigned_date_from",
+									"value": "2020-01-01",
+									"disabled": true
+								},
+								{
+									"key": "resigned_date_to\n",
+									"value": "9000-04-09",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "work_location",
+									"value": "puna",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userc_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "token {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n\t\n\t\"id\": \"f71aee2b-dfc4-41f6-975a-36a7e7a96af5\",\n\t\"email\":\"pariskamal18@gmail.com\",\n\t\"password\":\"12345678\",\n\t\"first_name\":\"prema\", \n\t\"last_name\":\"patil\", \n\t\"role_id\":\"9f96b0c4-0b2b-48a7-b6be-c3af5cee66f5\",\n\t\"mobile\":9998087970\n}"
+						},
+						"url": {
+							"raw": "{{url}}accounts/user_update/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"user_update",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "57f019e4-bead-48bc-9bd2-d190b58f76e5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}accounts/user_get/?id=5593279b-09b0-4ddb-932b-72618bae40ce",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"user_get",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5593279b-09b0-4ddb-932b-72618bae40ce"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/logout/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "token {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/user_profile/?id=707b75fa-979d-45a3-bb0d-d24451f67291",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"user_profile",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "707b75fa-979d-45a3-bb0d-d24451f67291"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "token {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n\t\"password\":\"Abc@12345\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}accounts/change_pass/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"change_pass",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3b39809f0f1ac9f49f4d3440791026f01f786d06",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "otpgen",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/send_otp?email=premapatil933@gmail.com",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"send_otp"
+							],
+							"query": [
+								{
+									"key": "subject",
+									"value": "otp",
+									"disabled": true
+								},
+								{
+									"key": "message",
+									"value": "forgotpass",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "premapatil933@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "request otp",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}accounts/send_email?email=premapatil933@gmail.com",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"send_email"
+							],
+							"query": [
+								{
+									"key": "otp",
+									"value": "uhsuhf",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "premapatil933@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"d7835fbe-6966-4ad4-9d2f-818dafed7555\",\n\t\"password\":\"999900\",\n\t\"otp\":\"SPi69q\",\n\t\"email\":\"premapatil933@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}accounts/forgotpassword/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"forgotpassword",
+								""
+							],
+							"query": [
+								{
+									"key": "otp",
+									"value": "I2pE7x",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "d7835fbe-6966-4ad4-9d2f-818dafed7555",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "premapatil933@gmail.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/user_dashboard/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"user_dashboard",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"old_password\":\"12345678\",\n \"password\":\"87654321\",\n \"confirm_password\":\"87654321\"\n \n }\n "
+						},
+						"url": {
+							"raw": "{{url}}accounts/update_password/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"update_password",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add_userrole",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role_name\":\"ADMIN\"\n}\n  "
+						},
+						"url": {
+							"raw": "{{url}}userroles/add_userrole/",
+							"host": [
+								"{{url}}userroles"
+							],
+							"path": [
+								"add_userrole",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "user_dropdown",
+							"host": [
+								"user_dropdown"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/delete_user?id=b80219c4-5b15-4b84-a85b-568af6b68928",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"delete_user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "b80219c4-5b15-4b84-a85b-568af6b68928"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard_graph",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}accounts/dashboard_graph/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"dashboard_graph",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_profile_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "36dc86ba-c237-48cc-b25a-dc6d76981a87",
+									"type": "text"
+								},
+								{
+									"key": "profile_pic",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}accounts/change_profile_picture/",
+							"host": [
+								"{{url}}accounts"
+							],
+							"path": [
+								"change_profile_picture",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "client_add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ab8c\",\n    \"web_link\": \"abc.com\",\n    \"ceo\": \"sachin kamaj\",\n    \"founder\": \"sachin\",\n    \"founded_on\": \"2019\",\n    \"email\": \"hirool@gmail.com\",\n    \"mobile\": \"9877309210\",\n    \"revenue\": \"10M\",\n    \"latest_funding\": \"100M\",\n    \"headquarter\": \"INDIA\",\n    \"address\": \"hirool india\",\n    \"profile_desc\": \"hiroll DESC 1\",\n    \"aggrement_doc\": \"hirool AGG 1\",\n    \"status\": \"Active\",\n    \"industry\": \"\",\n    \"category\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}clients/client_add/",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_add",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token   {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}clients/client_list/",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_list",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "cognizant",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Private",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}clients/client_get/?id=0ab93255-3f61-4830-82c8-a0f8ab1c088f",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_get",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0ab93255-3f61-4830-82c8-a0f8ab1c088f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"id\": \"e62091e9-bd6e-4a47-90bd-763f9fb7d882\",\n  \t\t\"name\": \"Marketing\",\n        \"web_link\": \"Accenture.com\",\n        \"ceo\": \"Ritesh Agarwal\",\n        \"founder\": \"Rekha M. Menon\",\n        \"founded_on\": \"2000\",\n        \"email\": \"Rekhamenon@gmail.com\",\n        \"mobile\": \"9876543210\",\n        \"revenue\": \"10M\",\n        \"latest_funding\": \"100M\",\n        \"headquarter\": \"China\",\n        \"address\": \"Accenture india\",\n        \"profile_desc\": \"Accenture DESC 1\",\n        \"aggrement_doc\": \"Accenture AGG 1\",\n        \"status\": \"Active\",\n        \"industry\": \"Finance\",\n        \"category\": \"public\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}clients/client_update/",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_dropdown_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}clients/client_dropdown_list",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_dropdown_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_client",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}clients/delete_client/?id=90997f8a-ea1e-494d-a4f2-791a22abacb1",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"delete_client",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "90997f8a-ea1e-494d-a4f2-791a22abacb1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_bulk_uplode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "file",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/priya/workspace/hire-api/api/libs/json_files/sample.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}clients/client_bulk_uplode/",
+							"host": [
+								"{{url}}clients"
+							],
+							"path": [
+								"client_bulk_uplode",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "job",
+			"item": [
+				{
+					"name": "job_add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \t\"client_id\": \"af9e5423-aad6-45a6-94f9-e1cc0f99dd5c\",\n\t\t\"job_title\": \"support team\",\n        \"tech_skills\": \"vmware\",\n        \"job_location\": \"banglore\",\n        \"job_type\": \"part_time\",\n        \"min_exp\": 0,\n        \"max_exp\": 2,\n        \"min_notice_period\": 20,\n        \"max_notice_period\": 30,\n        \"min_ctc\":5,\n        \"max_ctc\":7,\n        \"qualification\": \"BE\",\n        \"percentage_criteria\": \"65\",\n        \"status\": \"active\",\n        \"jd_extra\": \"\"\n}\t"
+						},
+						"url": {
+							"raw": "{{url}}jobs/job_add/",
+							"host": [
+								"{{url}}jobs"
+							],
+							"path": [
+								"job_add",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}jobs/job_get/?id=2aacfe8b-5c67-49f7-bf66-9d8876b30211",
+							"host": [
+								"{{url}}jobs"
+							],
+							"path": [
+								"job_get",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2aacfe8b-5c67-49f7-bf66-9d8876b30211"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}jobs/job_list/",
+							"host": [
+								"{{url}}jobs"
+							],
+							"path": [
+								"job_list",
+								""
+							],
+							"query": [
+								{
+									"key": "job_location",
+									"value": "pune",
+									"disabled": true
+								},
+								{
+									"key": "tech_skills",
+									"value": "django",
+									"disabled": true
+								},
+								{
+									"key": "min_relevant_exp",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "min_ctc",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "max_ctc",
+									"value": "7",
+									"disabled": true
+								},
+								{
+									"key": "max_exp",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "min_exp",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "client",
+									"value": "TCS",
+									"disabled": true
+								},
+								{
+									"key": "min_notice_period",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "qualification",
+									"value": "BE,BCA",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "4",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"497252cd-6c9f-40d4-9f6a-f381295c9d36\",\n    \"client\": \"680e6bee-4ecf-4574-a76a-a9ba1c9d0bb4\",\n\t\"job_title\": \"Data Analyst\",\n        \"jd_url\": \"wwwwwwwww\",\n        \"tech_skills\": \"Account\",\n        \"job_location\": \"pune\",\n        \"job_type\": \"permanent\",\n        \"min_exp\": 2,\n        \"max_exp\": 4,\n        \"min_notice_period\": 4,\n        \"max_notice_period\": 34,\n        \"min_ctc\": 0,\n        \"max_ctc\": 1000,\n        \"qualification\": \"BE,BCA,BSC,BTec\",\n        \"percentage_criteria\": \"80\",\n        \"status\": \"Active\",\n        \"jd_extra\": \"abc\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}jd/job_update/",
+							"host": [
+								"{{url}}jd"
+							],
+							"path": [
+								"job_update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_dropdown_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}jobs/job_dropdown_list",
+							"host": [
+								"{{url}}jobs"
+							],
+							"path": [
+								"job_dropdown_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_bulk_uplode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/priya/workspace/hire-api/api/libs/json_files/sample.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}jd/job_bulk_uplode",
+							"host": [
+								"{{url}}jd"
+							],
+							"path": [
+								"job_bulk_uplode"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "candidate",
+			"item": [
+				{
+					"name": "candidate_add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "parisqw",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "kamal",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "pariskamadbbhdjl1546ww8@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "9108208657",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "12-07-1994",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "candidate_url",
+									"value": "wwwwwww",
+									"type": "text"
+								},
+								{
+									"key": "sslc_marks",
+									"value": "80",
+									"type": "text"
+								},
+								{
+									"key": "puc_marks",
+									"value": "67",
+									"type": "text"
+								},
+								{
+									"key": "bachelor_degree",
+									"value": "70",
+									"type": "text"
+								},
+								{
+									"key": "bachelor_degree_course",
+									"value": "cs",
+									"type": "text"
+								},
+								{
+									"key": "bachelor_degree_marks",
+									"value": "72",
+									"type": "text"
+								},
+								{
+									"key": "master_degree",
+									"value": "BE",
+									"type": "text"
+								},
+								{
+									"key": "master_degree_course",
+									"value": "CS",
+									"type": "text"
+								},
+								{
+									"key": "master_degree_marks",
+									"value": "76",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "1 main bastwad",
+									"type": "text"
+								},
+								{
+									"key": "tech_skills",
+									"value": "python,django,java,php",
+									"type": "text"
+								},
+								{
+									"key": "prefered_location",
+									"value": "\"Mumbai\"",
+									"type": "text"
+								},
+								{
+									"key": "previous_company",
+									"value": "Kinnter",
+									"type": "text"
+								},
+								{
+									"key": "work_experience",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "current_ctc",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "expected_ctc",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "notice_period",
+									"value": "60",
+									"type": "text"
+								},
+								{
+									"key": "resume",
+									"type": "file",
+									"src": "/home/priya/Downloads/Import_User_Sample_en.csv"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}candidate/candidate_add/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_add",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}candidate/candidate_list/?page =1",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_list",
+								""
+							],
+							"query": [
+								{
+									"key": "notice_period",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "notice_period",
+									"value": "60",
+									"disabled": true
+								},
+								{
+									"key": "previous_company",
+									"value": "Marketing",
+									"disabled": true
+								},
+								{
+									"key": "expected_ctc",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "work_experience_from",
+									"value": "6",
+									"disabled": true
+								},
+								{
+									"key": "notice_period_from",
+									"value": "61",
+									"disabled": true
+								},
+								{
+									"key": "page ",
+									"value": "1"
+								},
+								{
+									"key": "tech_skills",
+									"value": "django",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}candidate/candidate_get/?id=e4cc175d-ff0e-44db-91e0-c182450303a7",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_get",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "e4cc175d-ff0e-44db-91e0-c182450303a7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "122d4325-f971-4c0e-b5c2-7df97303340b",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "kamal",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "jyoti",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "jyoti2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "mobile",
+									"value": "9988776655",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "21-03-2010",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "F",
+									"type": "text"
+								},
+								{
+									"key": "candidate_url",
+									"value": "wwwww",
+									"type": "text"
+								},
+								{
+									"key": "sslc_marks",
+									"value": "67",
+									"type": "text"
+								},
+								{
+									"key": "puc_marks",
+									"value": "60",
+									"type": "text"
+								},
+								{
+									"key": "bachelor_degree",
+									"value": "bsc",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "bachelor_degree_course",
+									"value": "bsc",
+									"type": "text"
+								},
+								{
+									"key": "master_degree",
+									"value": "msc",
+									"type": "text"
+								},
+								{
+									"key": "master_degree_course",
+									"value": "msc",
+									"type": "text"
+								},
+								{
+									"key": "bachelor_degree_marks",
+									"value": "70",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "main road,bastwad",
+									"type": "text"
+								},
+								{
+									"key": "tech_skills",
+									"value": "chemistry",
+									"type": "text"
+								},
+								{
+									"key": "prefered_location",
+									"value": "\"belgaum\"",
+									"type": "text"
+								},
+								{
+									"key": "previous_company",
+									"value": "tss",
+									"type": "text"
+								},
+								{
+									"key": "work_experience",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "current_ctc",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "expected_ctc",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "notice_period",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "resume",
+									"value": "",
+									"type": "file"
+								},
+								{
+									"key": "status",
+									"value": "Active",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}candidate/candidate_update/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload resume",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Resume",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "id",
+									"value": "a7bdbeb2-9cf6-4319-a618-c869b4a2b44e",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}candidate/upload_file/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"upload_file",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resume_download_file",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/resume_download/?id=d3773cf7-b0a7-4763-8153-03d447f9905c",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"resume_download",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "d3773cf7-b0a7-4763-8153-03d447f9905c"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/candidate_skills_dropdown/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_skills_dropdown",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "49cb10c5-b225-49eb-9c0c-ee072572c8cd",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_columns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/candidate_common_fiels/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_common_fiels",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_skills_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/candidate_skills_dropdown/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_skills_dropdown",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_prepared_location",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/candidate_prepared_location/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_prepared_location",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_bulk_uplode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/priya/workspace/hire-api/api/libs/json_files/sample.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}candidate/candidate_bulk_uplode/",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_bulk_uplode",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_bulk_file_format",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}candidate/candidate_bulk_file_format",
+							"host": [
+								"{{url}}candidate"
+							],
+							"path": [
+								"candidate_bulk_file_format"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "interview",
+			"item": [
+				{
+					"name": "interview_list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}interviews/interview_list/?client=cognizant&location=delhi",
+							"host": [
+								"{{url}}interviews"
+							],
+							"path": [
+								"interview_list",
+								""
+							],
+							"query": [
+								{
+									"key": "member",
+									"value": "86754207-fcc1-482f-b5b8-90a530eb8960",
+									"disabled": true
+								},
+								{
+									"key": "client",
+									"value": "cognizant"
+								},
+								{
+									"key": "job_title",
+									"value": "support team",
+									"disabled": true
+								},
+								{
+									"key": "interview_round",
+									"value": "Online round",
+									"disabled": true
+								},
+								{
+									"key": "date_from",
+									"value": "2000-08-06",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "delhi"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interviews_add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"client\":\"af9e5423-aad6-45a6-94f9-e1cc0f99dd5c\",\n    \"job\": \"0b21397a-aed2-4268-836c-ca29c4959a63\",\n    \"user\": \"16809ca6-8554-433e-9e8c-d712953cf6b6\",\n    \"candidate\":\"pariskamadbbhdjl1546ww8@gmail.com\",\n    \"interview_round\": \"8eff2133-baa9-42f6-9fbe-7824903fae66\",\n    \"interview_status\":\"c1220c87-079c-4e88-878a-8a627710f385\",\n    \"date\": \"8-3-2020\",\n    \"location\": \"mumbai\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}interviews/interview_add/",
+							"host": [
+								"{{url}}interviews"
+							],
+							"path": [
+								"interview_add",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}interviews/interview_get/?id=683c2f0e-b972-427a-8cb7-c32643b97add",
+							"host": [
+								"{{url}}interviews"
+							],
+							"path": [
+								"interview_get",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "683c2f0e-b972-427a-8cb7-c32643b97add"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_delete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}  token",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviews/delete_interview",
+							"host": [
+								"{{url}}interviews"
+							],
+							"path": [
+								"delete_interview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t \"id\": \"d0c22401-5397-40f9-b40e-6a17e52c5b8b\",\n    \"date\": \"2021-01-11T19:30:00+0530\",\n    \"location\": \"banglore\",\n    \"interview_round\": \"1f5fb59d-fffa-4470-8931-7eca0e8b0e43\",\n    \"interview_status\": \"d21293b3-e9b6-4fb6-b685-04972a30d257\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}interviews/interview_update/",
+							"host": [
+								"{{url}}interviews"
+							],
+							"path": [
+								"interview_update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "json_files",
+			"item": [
+				{
+					"name": "candidate_skills_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/candidate_skills_dropdown/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"candidate_skills_dropdown",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_menu_sidebar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/menu_sidebar/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"menu_sidebar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_designation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/user_designation/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"user_designation",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_columns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/user_columns/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"user_columns",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_skills_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/user_skills_dropdown/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"user_skills_dropdown",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_prepared_location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/candidate_prepared_location/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"candidate_prepared_location",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "candidate_columns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/candidate_columns/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"candidate_columns",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_column_jsondata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/client_column_jsondata/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"client_column_jsondata",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/client_category/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"client_category",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client_industry",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/client_industry/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"client_industry",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_column_jsondata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/job_column_jsondata/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"job_column_jsondata",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_columns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/interview_columns/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"interview_columns",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/interview_status/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"interview_status",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interview_round",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/interview_round/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"interview_round",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leave_management_columns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}json_files/leave_management_columns/",
+							"host": [
+								"{{url}}json_files"
+							],
+							"path": [
+								"leave_management_columns",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "interview_Round",
+			"item": [
+				{
+					"name": "interviews_add_round",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"interview_round\":\"Online round\"\n   }"
+						},
+						"url": {
+							"raw": "{{url}}interviewsround/add_round/",
+							"host": [
+								"{{url}}interviewsround"
+							],
+							"path": [
+								"add_round",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "round_get",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviewsround/round_get/",
+							"host": [
+								"{{url}}interviewsround"
+							],
+							"path": [
+								"round_get",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "round_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviewsround/round_list/",
+							"host": [
+								"{{url}}interviewsround"
+							],
+							"path": [
+								"round_list",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inetrviewround_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviewsround/inetrviewround_dropdown/",
+							"host": [
+								"{{url}}interviewsround"
+							],
+							"path": [
+								"inetrviewround_dropdown",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "interview_status",
+			"item": [
+				{
+					"name": "permissions",
+					"item": [
+						{
+							"name": "add_permissions",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \t\"permissions\":\"RW\",\n\t    \"discription\":\"HR can readwrite\"\n\t\n}"
+								},
+								"url": {
+									"raw": "{{url}}permissions/add_permissions/",
+									"host": [
+										"{{url}}permissions"
+									],
+									"path": [
+										"add_permissions",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list_permission",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "token  {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}permissions/list_permission/",
+									"host": [
+										"{{url}}permissions"
+									],
+									"path": [
+										"list_permission",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "add_status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\":\"Processing\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}interviewsstatus/add_status/",
+							"host": [
+								"{{url}}interviewsstatus"
+							],
+							"path": [
+								"add_status",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviewsstatus/status_list/",
+							"host": [
+								"{{url}}interviewsstatus"
+							],
+							"path": [
+								"status_list",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inetrviewstatus_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}interviewsstatus/inetrviewstatus_dropdown",
+							"host": [
+								"{{url}}interviewsstatus"
+							],
+							"path": [
+								"inetrviewstatus_dropdown"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "actions",
+			"item": [
+				{
+					"name": "add_actions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"action_name\":\"interview_update\"}"
+						},
+						"url": {
+							"raw": "{{url}}actions/add_actions/",
+							"host": [
+								"{{url}}actions"
+							],
+							"path": [
+								"add_actions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_actions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}actions/list_actions/",
+							"host": [
+								"{{url}}actions"
+							],
+							"path": [
+								"list_actions",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "user_permissions",
+			"item": [
+				{
+					"name": "add_userpermissions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"actions\":\"b8df110c-2bc8-475f-973e-d48b2b45cd18\",\n  \"user\":\"d7e55c64be4a9ee5cab6d30912892f88cee05d33\",\n  \"permission\":\"f27abf03-e915-489e-97ac-53c9778f42b6\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}userpermissions/add_userpermissions/",
+							"host": [
+								"{{url}}userpermissions"
+							],
+							"path": [
+								"add_userpermissions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_userpermission",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}userpermissions/list_userpermission/",
+							"host": [
+								"{{url}}userpermissions"
+							],
+							"path": [
+								"list_userpermission",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "c8d13724-3fc2-42b8-981a-5be08031884e",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_userpermission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}userpermissions/get_userpermission/?id=5e52d152-0b4b-41d5-9dcc-0311b44d17c9",
+							"host": [
+								"{{url}}userpermissions"
+							],
+							"path": [
+								"get_userpermission",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5e52d152-0b4b-41d5-9dcc-0311b44d17c9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "user_permissions",
+							"host": [
+								"user_permissions"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "leave_type",
+			"item": [
+				{
+					"name": "add_leavetype",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"leave_type\":\"Planned\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}leavetype/add_leavetype/",
+							"host": [
+								"{{url}}leavetype"
+							],
+							"path": [
+								"add_leavetype",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leavetype_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}leavetype/leavetype_list?id=08556c07-d7e4-4ba3-9d0a-2e6ae790e905",
+							"host": [
+								"{{url}}leavetype"
+							],
+							"path": [
+								"leavetype_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "08556c07-d7e4-4ba3-9d0a-2e6ae790e905"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leavetype_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}leavetype/leavetype_dropdown/",
+							"host": [
+								"{{url}}leavetype"
+							],
+							"path": [
+								"leavetype_dropdown",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_leavetype",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}leavetype/get_leavetype",
+							"host": [
+								"{{url}}leavetype"
+							],
+							"path": [
+								"get_leavetype"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "leave_tracker",
+			"item": [
+				{
+					"name": "add_leave",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"16809ca6-8554-433e-9e8c-d712953cf6b6\",\n\t\"leave_type\":\"08556c07-d7e4-4ba3-9d0a-2e6ae790e905\",\n\t\"from_date\":\"17-7-2020\",\n\t\"to_date\":\"25-7-2020\",\n\t\"description\":\"lock down\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}leavemanagement/add_leave/",
+							"host": [
+								"{{url}}leavemanagement"
+							],
+							"path": [
+								"add_leave",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leave_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}leavemanagement/leave_list/?leave_type=Emergancy",
+							"host": [
+								"{{url}}leavemanagement"
+							],
+							"path": [
+								"leave_list",
+								""
+							],
+							"query": [
+								{
+									"key": "user",
+									"value": "d8e33968-48d7-45c0-8481-31f71fef4f7c",
+									"disabled": true
+								},
+								{
+									"key": "from_date",
+									"value": "2020-10-6",
+									"disabled": true
+								},
+								{
+									"key": "to_date",
+									"value": "2020-10-20",
+									"disabled": true
+								},
+								{
+									"key": "user",
+									"value": "bavana patil",
+									"disabled": true
+								},
+								{
+									"key": "leave_type",
+									"value": "Emergancy"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leavestatus_dropdown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "leavestatus_dropdown",
+							"host": [
+								"leavestatus_dropdown"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leave_update",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token  {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"id\": \"131e6765-f40d-4799-a660-449a40aea71c\",\n\n\t\"user\":\"498172ee-d299-442a-bf05-f38a9470735d\",\n\t\"leave_type\":\"345a687b-e0d9-4037-979d-993f8e451cfb\",\n\t\"from_date\":\"8-3-2020\",\n\t\"to_date\":\"12-3-2020\",\n\t\"leave_status\":\"Approved\",\n\t\"approved_by\":\"46bd59ce-d8e5-4c84-8411-ae15f6353186\",\n\t\"description\":\"back to native\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}leavemanagment/leave_update",
+							"host": [
+								"{{url}}leavemanagment"
+							],
+							"path": [
+								"leave_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_leave",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "token {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}leavemanagement/get_leave?id=0b43e89f-2bf9-4789-ad05-66d2060df61c",
+							"host": [
+								"{{url}}leavemanagement"
+							],
+							"path": [
+								"get_leave"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0b43e89f-2bf9-4789-ad05-66d2060df61c"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

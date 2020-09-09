@@ -82,7 +82,7 @@ class UserRegSerializer(serializers.ModelSerializer):
 	work_location=serializers.CharField(required=False)
 	previous_company=serializers.CharField(required=False)
 	status=serializers.CharField(required=False)
-	profile_pic=serializers.ImageField(required=False)
+	image_url=serializers.ImageField(required=False)
 
 	joined_date=serializers.DateField(input_formats=['%d-%m-%Y',],required=False)
 	resigned_date=serializers.DateField(input_formats=['%d-%m-%Y',],required=False)
@@ -95,7 +95,7 @@ class UserRegSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
 		
-		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic','password',
+		fields = ('id','email', 'first_name','last_name', 'mobile','image_url','password',
 			'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location','previous_company',
 			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to',)
 		# fields='__all__'
@@ -116,7 +116,7 @@ class UserListSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
 		# fields='__all__'
-		fields = ('id','email', 'first_name','last_name', 'mobile','profile_pic',
+		fields = ('id','email', 'first_name','last_name', 'mobile','image_url',
 			'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location','previous_company',
 			'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to',)
 		# fields='__all__'
@@ -181,7 +181,7 @@ class UserUpdateRequestSerializer(serializers.ModelSerializer):
 	anual_salary=serializers.CharField(required=False)
 	work_location=serializers.CharField(required=False)
 	status=serializers.CharField(required=False)
-	profile_pic=serializers.ImageField(required=False)
+	image_url=serializers.ImageField(required=False)
 
 	joined_date=serializers.DateField(input_formats=['%d-%m-%Y',],required=False)
 	resigned_date=serializers.DateField(input_formats=['%d-%m-%Y',],required=False)
@@ -202,21 +202,34 @@ class UserUpdateRequestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=User
 		# fields=('id','email', 'first_name','last_name', 'mobile','profile_pic',
-		# 	'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location',
-		# 	'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to')
+		#   'dob','gender','address','qualification','specialization','marks','passing_year','anual_salary','work_location',
+		#   'college','work_experience','skills','designation','status','joined_date','resigned_date','exit_date','reporting_to')
 		fields='__all__'
 		# write_only_fields = ('password',)
 		# read_only_fields = ('id',)
 
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+	id = serializers.CharField(required=True)
+	image_url=serializers.ImageField(required=True)
 
-class clientserializer(serializers.ModelSerializer):
-
+	def update(self, instance, validated_data):
+		for attr ,value in validated_data.items():
+			setattr(instance,attr,value)
+		instance.save()
+		return instance
 	class Meta:
-		model = User
-		fields = (
-			'first_name', 'last_name', 'mobile', 'access_token', 'sub_cluster',
-			'is_verified', 'is_active', 'email', 'image_url'
-		)
+		model=User
+		fields=('id','image_url')
+
+
+# class clientserializer(serializers.ModelSerializer):
+
+# 	class Meta:
+# 		model = User
+# 		fields = (
+# 			'first_name', 'last_name', 'mobile', 'access_token', 'sub_cluster',
+# 			'is_verified', 'is_active', 'email', 'image_url'
+# 		)
 
 
 
@@ -267,6 +280,7 @@ class UserRoleListSerializer(serializers.ModelSerializer):
 
 
 
+
  ############################################################################## 
 class UserPermissionCreateRequestSerializer(serializers.Serializer):
 	actions=serializers.PrimaryKeyRelatedField(queryset=Actions.objects.all(),required=False)
@@ -297,6 +311,45 @@ class UserPermissionsListSerializer(serializers.ModelSerializer):
 		fields = (
 			'id','actions','user','permission'
 		)
+
+class PermissionsGetSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Permissions
+		fields = (
+			'id','permissions','discription'
+		)
+
+class ActionGetSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Actions
+		fields = ('id','action_name')
+
+class UserGetSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model = User
+		fields = ('id')
+
+
+
+
+class UserPermissionSerializer(serializers.ModelSerializer):
+	user=UserGetSerializer()
+	permission=PermissionsGetSerializer()
+	actions=ActionGetSerializer()
+
+	class Meta:
+		model = UserPermissions
+		fields = (
+			'id','actions','user','permission'
+		)
+
+# class UserSerializer(serializers.ModelSerializer):
+#   class Meta:
+#       model = UserPermissions
+#       fields = ('id')
 #############################################################################
 
 

@@ -1,91 +1,4 @@
-# django imports
-from rest_framework import filters
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import status
-from django.db.models.functions import Trunc
-from django.db.models.functions import TruncMonth,TruncDay,TruncDate
-from django.db.models import Sum, Count
-from django.db.models.functions import ExtractMonth,ExtractYear
-from django.contrib.auth import authenticate
-from datetime import datetime
-import json
-import os,io
-
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
-
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.conf import settings
-from django.core.paginator import Paginator
-from api.default_settings import MEDIA_ROOT,JSON_MEDIA_ROOT
-
-
-
-# app level imports
-from .permissions import HiroolReadOnly
-from .models import User, Actions, Permissions, UserPermissions,UserRole
-from clients.models import Client,Job
-from candidate.models import Candidate
-from interview.models import  Interview
-
-
-# from templates 
-
-from .serializers import (
-	UserLoginRequestSerializer,
-	UserRegSerializer,
-	UserListSerializer,
-	UserGetSerializer,
-	UserUpdateRequestSerializer,
-	UserPassUpdateSerializer,
-	UserDrowpdownGetSerializer,
-	UserVerifyRequestSerializer,
-
-	UserRoleCreateRequestSerializer,
-	UserRoleListSerializer,
-
-	UserPermissionCreateRequestSerializer,
-	UserPermissionsListSerializer,
-
-	PermissionCreateRequestSerializer,
-	PermissionsListSerializer,
-
-	ActionCreateRequestSerializer,
-	ActionListSerializer
-)
-
-from .services import UserServices
-from .services import userpermissions_service
-from .services import permission_service
-from .services import action_service,UserRoleService
-
-# project level imports
-from libs.constants import (
-	BAD_REQUEST,
-	BAD_ACTION,
-	# ParseException
-
-)
-from libs import (
-				# redis_client,
-				otpgenerate,
-				mail,
-				)
-
-from libs.clients import (
-	redis_client
-)
-# from libs.utils import(
-# 	mail,
-# 	)
-from libs.exceptions import ParseException
-from libs.pagination import StandardResultsSetPagination
-
-
+from .user_imports import *
 
 class UserViewSet(GenericViewSet):
 	"""
@@ -112,9 +25,10 @@ class UserViewSet(GenericViewSet):
 		'forgotpass': UserPassUpdateSerializer,
 		'update_password': UserPassUpdateSerializer,
 		'user_profile':UserListSerializer, 
-		'user_dropdown':UserDrowpdownGetSerializer ,
-		'delete_user':UserListSerializer
-		# 'send_email': UserVerifyRequestSerializer
+		'user_dropdown':UserDrowpdownGetSerializer,
+		'delete_user':UserListSerializer,
+		'change_profile_picture':UserProfileUpdateSerializer,
+
 		 }
 
 
@@ -122,6 +36,8 @@ class UserViewSet(GenericViewSet):
 		if filterdata:
 			self.queryset =User.objects.filter(**filterdata)
 		return self.queryset
+
+
 
 	def get_serializer_class(self):
 		"""
@@ -133,6 +49,8 @@ class UserViewSet(GenericViewSet):
 			raise ParseException(BAD_ACTION, errors=key)
 
 
+
+
 	@action(methods=['post'], detail=False, permission_classes=[])
 	def register(self, request):
 		"""
@@ -140,6 +58,7 @@ class UserViewSet(GenericViewSet):
 		"""
 		serializer = self.get_serializer(data=request.data)
 		if serializer.is_valid() is False:
+			print(serializer.errors)
 			raise ParseException({'status':'Incorrect Input'}, serializer.errors)
 		if User.objects.filter(email=self.request.data['email']).exists():
 			return Response({"status":"User already exists"},status=status.HTTP_400_BAD_REQUEST)
@@ -178,6 +97,7 @@ class UserViewSet(GenericViewSet):
 						status=status.HTTP_200_OK)
 
 
+
 	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ])
 	def logout(self, request):
 		"""
@@ -185,6 +105,7 @@ class UserViewSet(GenericViewSet):
 		"""
 		request.user.auth_token.delete()
 		return Response(status=status.HTTP_200_OK)
+
 
 
 
@@ -243,32 +164,26 @@ class UserViewSet(GenericViewSet):
 		methods=['get'],
 		detail=False,
 		# url_path='image-upload',
-		permission_classes=[IsAuthenticated, ],
+		permission_classes=[],
 	)
-
-
+	
 	def user_list(self, request,**dict):
 		"""
 		Return user list data and groups
 		"""
-
 		try:
 			filterdata = self.user_query_string(request.query_params.dict())
 			page = self.paginate_queryset(self.get_queryset(filterdata))
 			serializer = self.get_serializer(page,many=True)
 			return self.get_paginated_response(serializer.data)
 		except Exception as e:
-			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
 	
 	@action(
 		methods=['get'],
-		detail=False,
-		# url_path='image-upload',
-		# permission_classes=[IsAuthenticated, ],
-	)
+		detail=False,)
 	def user_dropdown(self, request, **dict):
 		"""
 		Return user list data and groups
@@ -286,11 +201,9 @@ class UserViewSet(GenericViewSet):
 		Return user list data and groups
 		"""
 		try:
-			# filter_data = request.query_params.dict()
 			serializer = self.get_serializer(self.services.get_queryset(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -316,6 +229,7 @@ class UserViewSet(GenericViewSet):
 
 
 	@action(
+
 		methods=['get', 'put'],
 		detail=False,
 		# url_path='image-upload',
@@ -339,7 +253,32 @@ class UserViewSet(GenericViewSet):
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
-	
+	@action(
+
+		methods=['put'],
+		detail=False,
+		# url_path='image-upload',
+		permission_classes=[IsAuthenticated, ],
+	)
+	def change_profile_picture(self, request):
+		"""
+		update user profile picture
+		"""
+		try:
+			data=request.data
+			id=data["id"]
+			user_obj = User.objects.get(id=request.user.id)
+			serializer=self.get_serializer(user_obj,data=request.data)
+			print(serializer)
+			if not serializer.is_valid():
+				print(serializer.errors)
+				raise ParseException(BAD_REQUEST,serializer.errors)
+			else:
+				serializer.save()    
+				return Response({"status":"updated profile picture"},status.HTTP_200_OK)
+		except Exception as e:
+			raise
+			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
 	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated],)
@@ -481,53 +420,12 @@ class UserViewSet(GenericViewSet):
 		try:
 			user_obj = self.services.get_user(id)
 		except User.DoesNotExist:
-			raise
 			return Response({"status": False}, status.HTTP_404_NOT_FOUND)
 		user_obj.delete()
 		return Response({"status":"user is deleted "}, status.HTTP_200_OK)
 	
 
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def menu_sidebar(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('menu_sidebar.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
 
-
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def user_designation(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('json_filesuser_designation.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
-		
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def user_columns(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('json_filesuser_columns.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
-		
-
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def skills_dropdown(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('skills_dropdown.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
 
 	
 	@action(
@@ -571,7 +469,8 @@ class UserViewSet(GenericViewSet):
 
 
 
-		return Response({"user": user,"interview":interview,"client":client,"jobs":job,"candidates":candidate,"interview":interview},status.HTTP_200_OK)
+		return Response({"user": user,"interview":interview,"client":client,"jobs":job,"candidates":candidate,
+						 "interview":interview},status.HTTP_200_OK)
 
 	
 	@action(
@@ -595,7 +494,16 @@ class UserViewSet(GenericViewSet):
 		jd={ "jd":Job.objects.annotate(month=TruncMonth('created_at')).
 		values('month').annotate(total=Count('id')).order_by()}
 
-		return Response({"user": user,"clients": client,"candidates": candidate,"jds": jd},status.HTTP_200_OK)
+		interview={ "interview":Interview.objects.annotate(month=TruncMonth('created_at')).
+		values('month').annotate(total=Count('id')).order_by()}
+
+		leave_management={ "leave_management":LeaveTracker.objects.annotate(month=TruncMonth('created_at')).
+		values('month').annotate(total=Count('id')).order_by()}
+
+	
+		return Response({"user": user,"clients": client,"candidates": candidate,"jds": jd,
+			"interviews":interview,"leave_management":leave_management},status.HTTP_200_OK)
+
 
 
 
@@ -689,6 +597,8 @@ class UserPermissionsViewSet(GenericViewSet):
 		'add_userpermissions': UserPermissionCreateRequestSerializer,
 		'list_userpermission': UserPermissionsListSerializer,
 		'get_userpermission': UserPermissionsListSerializer,
+		'user_permissions': UserPermissionSerializer,
+
 
 	}
 
@@ -707,6 +617,7 @@ class UserPermissionsViewSet(GenericViewSet):
 		"""
 		serializer = self.get_serializer(data=request.data)
 		if serializer.is_valid() is False:
+			print(serializer.errors)
 			raise ParseException(BAD_REQUEST, serializer.errors)
 		permissions = serializer.create(serializer.validated_data)
 		if permissions:
@@ -733,6 +644,27 @@ class UserPermissionsViewSet(GenericViewSet):
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
+
+	@action(
+		methods=['get'],
+		detail=False, permission_classes=[IsAuthenticated,],
+	)
+	def user_permissions(self, request):
+		try:
+			# id=request.user.id
+
+			user=request.user.id
+			user_obj = UserPermissions.objects.get()
+			serializer = self.get_serializer(user_obj)
+			if not serializer.is_valid():
+				print(serializer.errors)
+				raise ParseException(BAD_REQUEST, serializer.errors)
+			return Response(serializer.data,status.HTTP_200_OK)
+		except Exception as e:
+			raise
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
 
 
 ###############################################################################

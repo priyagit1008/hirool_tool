@@ -1,5 +1,9 @@
 from .models import User,UserPermissions,Permissions,Actions,UserRole
 
+from clients.models import Client
+from candidate.models import Candidate
+from interview.models import  Interview
+
 class UserServices:
 
     def get_queryset(self,filter_data):

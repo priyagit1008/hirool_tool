@@ -4,7 +4,8 @@ from rest_framework import serializers
 from .models import Interview ,InterviewRound,InterviewStatus
 from libs.helpers import time_it
 
-from clients.models import Client,Job
+from clients.models import Client
+from jobs.models import Job
 from candidate.models import Candidate
 # from interview.models import Interview,InterviewRound,InterviewStatus
 from accounts.models import User
@@ -150,7 +151,7 @@ class InterviewRoundRequestSerializer(serializers.Serializer):
     interview_round=serializers.CharField(required=True)
 
     class Meta:
-        models = InterviewRound
+        model = InterviewRound
         fields = '__all__'
 
 
@@ -159,20 +160,25 @@ class InterviewRoundRequestSerializer(serializers.Serializer):
         interview_round.save()
         return interview_round
 
+# class InterviewRoundListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = InterviewRound
+#         fields= '__all__'
 class InterviewRoundListSerializer(serializers.ModelSerializer):
     class Meta:
         model= InterviewRound
-        fields= '__all__'
+        fields = '__all__'
 
 
 class InterviewRoundDrowpdownGetSerializer(serializers.Serializer):
-	value = serializers.CharField(source='interview_round',required=True, min_length=2)
-	label = serializers.CharField(source='interview_round',required=True, min_length=2)
-	interview_round_id=serializers.CharField(source='id',required=True)
+    value = serializers.CharField(source='interview_round',required=True, min_length=2)
+    label = serializers.CharField(source='interview_round',required=True, min_length=2)
+    interview_round_id=serializers.CharField(source='id',required=True)
 
-	class Meta:
-		model = InterviewRound
-		fields = ('interview_round_id','value','label')
+    class Meta:
+        model = InterviewRound
+        fields = ('interview_round_id','value','label')
+
         
 
 
@@ -203,7 +209,7 @@ class InterviewStatusDrowpdownGetSerializer(serializers.Serializer):
 	interview_status_id=serializers.CharField(source='id',required=True)
 
 	class Meta:
-		model = InterviewRound
+		model = InterviewStatus
 		fields = ('interview_status_id','value','label')
 
 class InterviewStatusListSerializer(serializers.ModelSerializer):

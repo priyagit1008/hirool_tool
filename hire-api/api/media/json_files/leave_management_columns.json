@@ -1,0 +1,53 @@
+[
+{
+"dataField" : "user",
+"text" : "User",
+"sort" : true
+},
+{
+"dataField" : "leave_type",
+"text" : "Leave Type",
+"sort" : true
+},
+{
+"dataField" : "leave_status",
+"text" : "Leave Status",
+"sort" : true
+},
+{
+"dataField" : "from_date",
+"text" : "From Date",
+"sort" : true
+},
+{
+"dataField" : "applied_date",
+"text" : "Applied Date",
+"sort" : true
+},
+{
+"dataField" : "to_date",
+"text" : "To Date",
+"sort" : true
+},
+{
+"dataField" : "approved_date",
+"text" : "Approved Date",
+"sort" : true
+},
+{
+"dataField" : "total_leaves",
+"text" : "Total Leaves",
+"sort" : true
+},
+{
+"dataField" : "available_leaves",
+"text" : "Available Leaves",
+"sort" : true
+},
+{
+"dataField" : "approved_by",
+"text" : "Approved By",
+"sort" : true
+}
+]
+

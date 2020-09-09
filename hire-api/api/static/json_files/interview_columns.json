@@ -1,0 +1,48 @@
+[
+{
+"dataField" : "candidate.first_name",
+"text" : "Candidate Name",
+"sort" : true
+},
+{
+"dataField" : "candidate.mobile",
+"text" : "Candidate Mobile",
+"sort" : true
+},
+{
+"dataField" : "candidate.email",
+"text" : "Candidate Email",
+"sort" : true
+},
+{
+"dataField" : "client.name",
+"text" : "Client Name",
+"sort" : true
+},
+{
+"dataField" : "job.job_title",
+"text" : "Job Role",
+"sort" : true
+},
+{
+"dataField" : "interview_round.interview_round",
+"text" : "Interview Round",
+"sort" : true
+},
+{
+"dataField" : "location",
+"text" : "interview Location",
+"sort" : true
+},
+{
+"dataField" : "date",
+"text" : "interview date",
+"sort" : true
+},
+{
+"dataField" : "interview_status.status",
+"text" : "Status",
+"sort" : true
+}
+]
+

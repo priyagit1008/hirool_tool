@@ -1,5 +1,4 @@
 # django imports
-
 import unicodedata
 import os,io
 from django.conf import settings
@@ -62,6 +61,7 @@ from api.default_settings import MEDIA_ROOT,JSON_MEDIA_ROOT
 
 from libs.exceptions import ParseException
 import codecs 
+# from .candidate_columns import (CANDIDATE_LIST)
 
 
 # Create your views here.
@@ -84,7 +84,7 @@ class CandidateViewSet(GenericViewSet):
 	http_method_names = ['get', 'post', 'put']
 
 	serializers_dict={
-			'candidate_Registration':CandidateCreateRequestSerializer,
+			'candidate_add':CandidateCreateRequestSerializer,
 			'candidate_list':CandidateListSerializer,
 			'candidate_get':CandidateListSerializer,
 			'candidate_update':CandidateUpdateSerializer,
@@ -107,7 +107,7 @@ class CandidateViewSet(GenericViewSet):
 
 
 	@action(methods=['post'], detail=False, permission_classes=[IsAuthenticated,],)
-	def candidate_Registration(self,request):
+	def candidate_add(self,request):
 		"""
 		Returns candidate account creation
 		"""
@@ -135,8 +135,8 @@ class CandidateViewSet(GenericViewSet):
 	def candidate_query_string(self,filterdata):
 		dictionary={}
 			 
-		if "prefered_location" in filterdata:
-			dictionary["prefered_location__icontains"] = filterdata.pop("prefered_location")
+		if "preferred_location" in filterdata:
+			dictionary["preferred_location__icontains"] = filterdata.pop("preferred_location")
 
 		if "tech_skills" in filterdata:
 			dictionary["tech_skills__icontains"] = filterdata.pop("tech_skills")
@@ -159,8 +159,8 @@ class CandidateViewSet(GenericViewSet):
 
 
 
-		if "prefered_location" in filterdata:
-			filterdata["prefered_location__icontains"] = filterdata.pop("prefered_location")
+		if "preferred_location" in filterdata:
+			filterdata["preferred_location__icontains"] = filterdata.pop("preferred_location")
 
 		if "tech_skills" in filterdata:
 			filterdata["tech_skills__icontains"] = filterdata.pop("tech_skills")
@@ -187,7 +187,7 @@ class CandidateViewSet(GenericViewSet):
 
 		
 	
-	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,HiroolReadOnly],)
+	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
 	def candidate_list(self,request,**dict):
 		"""
 		Returns candidate list
@@ -238,17 +238,17 @@ class CandidateViewSet(GenericViewSet):
 			return Response({"status":"Not Found"},status.HTTP_404_NOT_FOUND)
 
 
-	@action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
-	def candidate_skills_dropdown(self,request):
-		"""
-		Returns single candidate details
-		"""
-		try:
-			filter_data = request.query_params.dict()
-			serializer = self.get_serializer(self.services.get_queryset_service(filter_data), many=True)
-			return Response(serializer.data, status.HTTP_200_OK)
-		except Exception as e:
-			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+	# @action(methods=['get'],detail=False,permission_classes=[IsAuthenticated,],)
+	# def candidate_skills_dropdown(self,request):
+	#   """
+	#   Returns single candidate details
+	#   """
+	#   try:
+	#       filter_data = request.query_params.dict()
+	#       serializer = self.get_serializer(self.services.get_queryset_service(filter_data), many=True)
+	#       return Response(serializer.data, status.HTTP_200_OK)
+	#   except Exception as e:
+	#       return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
 	@action(
@@ -275,57 +275,66 @@ class CandidateViewSet(GenericViewSet):
 
 
 	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
+	  permission_classes=[IsAuthenticated,],
+	  )
 	def candidate_columns(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('candidate_columns.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
+	  candidate_list=CANDIDATE_LIST
+	  return Response(candidate_list)
+	  # file_path = os.path.join(JSON_MEDIA_ROOT,str('candidate_columns.json'))
+	  # myfile= open(file_path,'r')
+	  # jsondata = myfile.read()
+	  # obj = json.loads(jsondata)
+	  # return Response(obj)
 
 
 	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
+	  permission_classes=[IsAuthenticated,],
+	  )
 	def candidate_skills_dropdown(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('skills_dropdown.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
-		# myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/skills_dropdown.json','r')
+	  file=self.file_read('skills_dropdown.json')
+	  return file
+	  # file_path = os.path.join(JSON_MEDIA_ROOT,'skills_dropdown.json')
+	  # myfile= open(file_path,'r')
+	  # jsondata = myfile.read()
+	  # obj = json.loads(jsondata)
+	  # return Response(obj)
+	#   # myfile= open('/home/priya/workspace/hire-api/api/libs/json_files/skills_dropdown.json','r')
 		
 
 	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
+	  permission_classes=[IsAuthenticated,],
+	  )
 	def candidate_prepared_location(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('prepared_location.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
+	  file_path = os.path.join(JSON_MEDIA_ROOT,str('preferred_location.json'))
+	  myfile= open(file_path,'r')
+	  jsondata = myfile.read()
+	  obj = json.loads(jsondata)
+	  return Response(obj)
+
+
+	# @action(methods=['get', 'patch'],detail=False,
+	# 	permission_classes=[IsAuthenticated,],
+	# 	)
+	# def candidate_commo(self, request):
+	# 	file_list=['skills_dropdown.json']
+
+	# 	if skills_dropdown.json in file_list:
+	# 		file_path == os.path.join(JSON_MEDIA_ROOT,str('preferred_location.json')):
+	# 		read=self.common()
+
+	# 	if file_path == os.path.join(JSON_MEDIA_ROOT,str('preferred_location.json')):
+	# 		read=self.common()
+
+	# 	if file_path == os.path.join(JSON_MEDIA_ROOT,str('candidate_columns.json')):
+	# 		return True
+	
+	# def common(self):
+	# 	myfile= open(file_path,'r')
+	# 	jsondata = myfile.read()
+	# 	obj = json.loads(jsondata)
+	# 	return Response(obj)
 
 	
-	@action(
-		methods=['get'],
-		detail=False,permission_classes=[],
-	)
-	def candidate_send_email(self,request,**dict):
-		"""
-		send mail api
-		"""
-		try:
-			msg_plain = render_to_string('email_message.txt',{"user":candidate.email})
-			msg_html = render_to_string('email.html',{"user":candidate.email})
-			mail.sendmail.delay(msg_plain,"hi",[request.user.email])
-			send_mail('Hirool',msg_plain,settings.EMAIL_HOST_USER,[candidate.email],html_message=msg_html)
-			return Response("hi")
-		except Exception as e:
-			return Response({"status": str(e)}, status.HTTP_404_NOT_FOUND)
-
-
 
 	@action(
 		methods=['get'],
@@ -377,27 +386,34 @@ class CandidateViewSet(GenericViewSet):
 		except Exception as e:
 
 			return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+    
 
+	def file_read(self,file_name):
+		file_path = os.path.join(JSON_MEDIA_ROOT,file_name)
+		myfile= open(file_path,'r')
+		jsondata = myfile.read()
+		obj = json.loads(jsondata)
+		return Response(obj)
 
 
 		# try:
-		# 	with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:
-		# 		dr=csv.DictReader(file)
-		# 		cand=Candidate()
-		# 		candidates=[]
-		# 		for row in dr:
-		# 			print(row)
-		# 			candidate_obj=Candidate(**row)
-		# 			try:
-		# 				candidate_obj.full_clean()
-		# 			except ValidationError:
-		# 				continue
-		# 			candidates.append(candidate_obj)
-		# 		data=Candidate.objects.bulk_create(candidates)
-		# 		return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
+		#   with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:
+		#       dr=csv.DictReader(file)
+		#       cand=Candidate()
+		#       candidates=[]
+		#       for row in dr:
+		#           print(row)
+		#           candidate_obj=Candidate(**row)
+		#           try:
+		#               candidate_obj.full_clean()
+		#           except ValidationError:
+		#               continue
+		#           candidates.append(candidate_obj)
+		#       data=Candidate.objects.bulk_create(candidates)
+		#       return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
 		# except Exception as e:
-		# 	raise
-		# 	return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+		#   raise
+		#   return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
 
 
 
@@ -409,15 +425,15 @@ class CandidateViewSet(GenericViewSet):
 #------------------------------------**************************************------------------------------------------------------------------------------------#
 
 		# with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as f:
-		# 	try:
-		# 		dire=csv.reader(f)
-		# 		cd=[]
-		# 		for row in dire:
-		# 			print(row)
-		# 		return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
-		# 	except Exception as e:
-		# 		raise
-		# 		return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
+		#   try:
+		#       dire=csv.reader(f)
+		#       cd=[]
+		#       for row in dire:
+		#           print(row)
+		#       return Response({"status":"Successfully inserted"},status=status.HTTP_201_CREATED)
+		#   except Exception as e:
+		#       raise
+		#       return Response({"status":str(e)},status.HTTP_404_NOT_FOUND)
 
 
 			# with open('/home/priya/workspace/hire-api/api/libs/json_files/sample.csv','r') as file:

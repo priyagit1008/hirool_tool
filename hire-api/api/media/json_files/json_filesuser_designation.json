@@ -1,0 +1,25 @@
+[{
+
+	"label" : "Trainee",
+	"value" : "Trainee"
+},
+{
+    "label" : "developer",
+	"value" : "developer"
+},
+{
+    "label" : "Graphic Designer",
+	"value" : "Graphic Designer"
+},
+{
+    "label" : "Web developer",
+	"value" : "Web developer"
+},
+{
+    "label" : "Product Engineer",
+	"value" : "Product Engineer"
+},
+{
+    "label" : "Manufacturing Engineer ",
+	"value" : "Manufacturing Engineer "
+}]

@@ -1,0 +1,1 @@
+from .candidate_columns import CANDIDATE_LIST

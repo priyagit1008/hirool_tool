@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from libs.helpers import time_it
+import os,io
 
-# Create your views here.
+
 from django.conf import settings
 from rest_framework import filters
 from rest_framework.decorators import action
@@ -11,6 +12,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
+import json 
+
 
 # from accounts.users.permissions import HiroolReadOnly, HiroolReadWrit
 
@@ -19,7 +22,7 @@ from libs.constants import (
 	BAD_REQUEST,
 	BAD_ACTION,
 )
-
+from api.default_settings import MEDIA_ROOT,JSON_MEDIA_ROOT
 from libs.exceptions import ParseException
 from libs.pagination import StandardResultsSetPagination
 
@@ -210,7 +213,7 @@ class LeaveTrackerViewSet(GenericViewSet):
 		except Exception as e:
 			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
-
+			
 
 
 
@@ -256,9 +259,9 @@ class LeaveTypeViewSet(GenericViewSet):
 		leavetype_obj = serializer.create(serializer.validated_data)
 
 		if leavetype_obj:
-			msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
+			# msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			# msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			# send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
 			return Response(serializer.data,status.HTTP_201_CREATED)
 
 		return Response({"status": "error"}, status.HTTP_404_NOT_FOUND)
@@ -301,7 +304,4 @@ class LeaveTypeViewSet(GenericViewSet):
 		except Exception as e:
 			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
-
-
-
-
+			

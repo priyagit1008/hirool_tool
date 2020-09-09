@@ -14,8 +14,6 @@ drf-url-filters==0.5.1
 elasticsearch==6.3.0
 gunicorn==19.8.1
 marshmallow==2.15.3
-psycopg2-binary==2.7.7
 raven==6.9.0
 redis==2.10.6
-requests==2.20.0
 splitio-client==6.2.2

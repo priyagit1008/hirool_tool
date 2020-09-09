@@ -10,9 +10,12 @@ from accounts.users import views as account_views
 from misc import views as misc_views
 from libs.custom_api_docs import include_docs_urls
 from clients import views as client_view
+from jobs import views as job_view
+
 from candidate import views as candidate_view
 from interview import views as interview_view
 from leave_management import views as leave_management_view
+from  json_files import views as json_files_view
 
 
 
@@ -43,7 +46,7 @@ router.register(r'clients', client_view.ClientViewSet, base_name='client')
 
 
 # register job app urls with router
-router.register(r'jd', client_view.JobViewSet, base_name='jd')
+router.register(r'jobs', job_view.JobViewSet, base_name='jd')
 
 # register candidate app urls with router
 router.register(r'candidate',candidate_view.CandidateViewSet,base_name='candidate')
@@ -63,6 +66,12 @@ router.register(r'leavemanagement',leave_management_view.LeaveTrackerViewSet,bas
 router.register(r'leavetype',leave_management_view.LeaveTypeViewSet,base_name='leaves')
 
 # router.register(r'leavestatus',leave_management_view.LeaveStatusViewSet,base_name='leaves')
+
+# register json_files app urls with router
+
+router.register(r'json_files',json_files_view.JsonFileViewSet,base_name='json_files')
+
+
 
 
 

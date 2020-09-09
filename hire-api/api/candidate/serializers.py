@@ -24,7 +24,7 @@ class CandidateCreateRequestSerializer(serializers.Serializer):
 	master_degree_marks=serializers.CharField(required=False)
 	address = serializers.CharField(required=False)
 	tech_skills= serializers.CharField(required=False)
-	prefered_location=serializers.JSONField(required=False)
+	preferred_location=serializers.JSONField(required=False)
 	previous_company=serializers.CharField(required=False)
 	work_experience=serializers.CharField(required=False)
 	current_ctc=serializers.FloatField(default=0.0,required=False)
@@ -39,7 +39,7 @@ class CandidateCreateRequestSerializer(serializers.Serializer):
 		fields = ('first_name','last_name','email ','candidate_url',
 		'mobile','dob','gender','sslc_marks','puc_marks','puc_per','bachelor_degree',
 		'bachelor_degree_course','bachelor_degree_marks','master_degree','master_degree_course','master_degree_marks',
-		'address','tech_skills','prefered_location','previous_company','work_experience','current_ctc'
+		'address','tech_skills','preferred_location','previous_company','work_experience','current_ctc'
 		'expected_ctc','notice_period','resume','status')        
 
 	def create(self, validated_data):
@@ -81,7 +81,7 @@ class CandidateUpdateSerializer(serializers.ModelSerializer):
 	master_degree_marks=serializers.CharField(required=False)
 	address = serializers.CharField(required=False)
 	tech_skills= serializers.CharField(required=False)
-	prefered_location=serializers.JSONField(required=False)
+	preferred_location=serializers.JSONField(required=False)
 	previous_company=serializers.CharField(required=False)
 	work_experience=serializers.CharField(required=False)
 	current_ctc=serializers.FloatField(default=0.0,required=False)

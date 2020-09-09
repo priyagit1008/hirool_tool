@@ -1,0 +1,68 @@
+[
+{
+"dataField" : "name",
+"text" : "Name",
+"sort" : true
+},
+{
+"dataField" : "web_link",
+"text" : "Web Link",
+"sort" : true
+},
+{
+"dataField" : "ceo",
+"text" : "CEO",
+"sort" : true
+},
+{
+"dataField" : "founder",
+"text" : "Founder",
+"sort" : true
+},
+{
+"dataField" : "founded_on",
+"text" : "Founded On",
+"sort" : true
+},
+{
+"dataField" : "email",
+"text" : "Email",
+"sort" : true
+},
+{
+"dataField" : "mobile",
+"text" : "Mobile No",
+"sort" : true
+},
+{
+"dataField" : "revenue",
+"text" : "Revenue",
+"sort" : true
+},
+{
+"dataField" : "latest_funding",
+"text" : "Funding",
+"sort" : true
+},
+{
+"dataField" : "headquarter",
+"text" : "Head quarter",
+"sort" : true
+},
+{
+"dataField" : "category",
+"text" : "Category",
+"sort" : true
+},
+{
+"dataField" : "industry",
+"text" : "industry",
+"sort" : true
+},
+{
+"dataField" : "address",
+"text" : "Address",
+"sort" : true
+}
+]
+

@@ -1,0 +1,48 @@
+[
+{
+"dataField" : "first_name",
+"text" : "First name",
+"sort" : true
+},
+{
+"dataField" : "last_name",
+"text" : "Last name",
+"sort" : true
+},
+{
+"dataField" : "email",
+"text" : "Email",
+"sort" : true
+},
+{
+"dataField" : "mobile",
+"text" : "Mobile No.",
+"sort" : true
+},
+{
+"dataField" : "tech_skills",
+"text" : "Skills",
+"sort" : true
+},
+{
+"dataField" : "work_experience",
+"text" : "Work experience",
+"sort" : true
+},
+{
+"dataField" : "current_ctc",
+"text" : "Current CTC",
+"sort" : true
+},
+{
+"dataField" : "notice_period",
+"text" : "Notice Period",
+"sort" : true
+},
+{
+"dataField" : "status",
+"text" : "Status",
+"sort" : true
+}
+]
+

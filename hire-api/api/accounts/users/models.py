@@ -62,13 +62,22 @@ class UserRole(TimeStampedModel):
             db_table = 'api_user_role'
 
 
+def user_directory_path(instance, filename): 
+  
+      extension  = filename.split(".")[-1]
+      # return 'user_%S/%s'.format(instance.id,filename)
+      # extension = filename[0-5]
+      return 'user_{0}/{1}.{2}'.format("images",instance.first_name,extension) 
+ 
+
+
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
       """
       User model represents the user data in the database.
       """
       STATUS = Choices(
-            ('active', 'ACTIVE'),
-            ('inactive', 'INACTIVE'),
+            ('active','ACTIVE' ),
+            ('inactive','INACTIVE'),
       )
 
       GENDER = Choices(
@@ -78,78 +87,38 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
       )
       id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-      first_name= models.CharField(max_length=64, blank=False,default=None)
+      first_name= models.CharField(max_length=64, blank=False)
       last_name=models.CharField(max_length=64,null=True,blank=True)
-      email = models.EmailField(max_length=128, unique=True, db_index=True, blank=False,default=None)
+      email = models.EmailField(max_length=128, unique=True, db_index=True, blank=False)
       mobile =models.BigIntegerField(
             validators=[
                   MinValueValidator(5000000000),
                   MaxValueValidator(9999999999),
             ],
             unique=True,
-            db_index=True,default=None,blank=False)
+            db_index=True,blank=False)
       dob= models.DateField(null=True,blank=True)
-      gender=models.CharField(choices=GENDER, max_length=10,null = True, blank=True, default=GENDER.M)
-      address=models.CharField(max_length=64, blank=True,null = True,default=None)
-      qualification=models.CharField(max_length=64, blank=False,default=None)
-      specialization=models.CharField(max_length=64,null = True, blank=True,default=None)
-      marks=models.CharField(max_length=64, blank=True,null = True,default=None)
-      passing_year=models.CharField(max_length=64, blank=True,null = True,default=None)
-      college=models.CharField(max_length=64, blank=True,null = True,default=None)
+      gender=models.CharField(choices=GENDER, max_length=10,null = True, blank=True)
+      address=models.CharField(max_length=64, blank=True,null = True)
+      qualification=models.CharField(max_length=64, blank=False)
+      specialization=models.CharField(max_length=64,null = True, blank=True)
+      marks=models.CharField(max_length=64, blank=True,null = True)
+      passing_year=models.CharField(max_length=64, blank=True,null = True)
+      college=models.CharField(max_length=64, blank=True,null = True)
       work_experience=models.CharField(max_length=64,null = True, blank=True)
-      skills=JSONField(default={}, blank=True, null=True)
+      skills=CharField(max_length=100,blank=True, null=True)
       designation=models.CharField(max_length=64,null = True, blank=True)
       anual_salary=models.CharField(max_length=64,null = True, blank=True)
       work_location=models.CharField(max_length=64,null = True, blank=True)
       previous_company=models.CharField(max_length=64,null = True, blank=True)
       status= models.CharField(max_length=64, choices=STATUS,blank=True, default=STATUS.active)
 
-      profile_pic= models.ImageField(max_length=255,null=True, blank=True)
+      image_url= models.ImageField(upload_to = user_directory_path,max_length=255,null=True, blank=True)
       joined_date= models.DateField(null=True,blank=True)
       resigned_date= models.DateField(null=True,blank=True)
       exit_date= models.DateField(null=True,blank=True)
       reporting_to=models.CharField(max_length=64, null=True,blank=True)
 
-
-
-
-
-
-
-
-
-
-
-      # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-      # email = models.EmailField(max_length=128, unique=True, db_index=True, blank=False)
-      # mobile = models.BigIntegerField(
-      #   validators=[
-      #       MinValueValidator(5000000000),
-      #       MaxValueValidator(9999999999),
-      #   ],
-      #   unique=True,
-      #   db_index=True,)
-      # employee_id = models.CharField(max_length=255, blank=False, default=uuid.uuid4)
-
-      # reporting_manager = models.CharField(max_length=64, blank=True)
-      # first_name = models.CharField(max_length=64, blank=True)
-      # last_name = models.CharField(max_length=64, blank=True)
-      # gender = models.CharField(choices=GENDER, max_length=1, blank=False, default=GENDER.M)
-      # role = models.ForeignKey(
-      #   UserRole,
-      #   on_delete=models.PROTECT,
-      #   related_name='role',
-      #   blank=True,
-      #   null=True
-      # )
-
-      # image_url = models.ImageField(max_length=255, blank=False)
-
-      # login_attempts_count = models.IntegerField(default=0)
-      # is_blocked = models.BooleanField(default=False)
-      # block_reason = models.CharField(max_length=255, blank=True)
-      # is_active = models.BooleanField(default=True)
-      # is_staff = models.BooleanField(default=True)
 
       objects = UserManager()
 
@@ -173,28 +142,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
       def full_name(self):
             return "{fn} {ln}".format(fn=self.first_name, ln=self.last_name)
 
-
-      def verify_otp(self, otp):
-            if self.login_attempts_count > settings.OTP_CONFIG[
-                        'ALLOWED_LOGIN_ATTEMPTS'] or self.otp is None:
-                  self.otp = None
-                  self.login_attempts_count = 0
-                  self.save(update_fields=['login_attempts_count', 'otp'])
-                  return (
-                        False, TOO_MANY_ATTEMPTS
-                  )
-
-            if self.otp == int(otp):
-                  self.otp = None
-                  self.login_attempts_count = 0
-                  self.save(update_fields=['login_attempts_count', 'otp'])
-                  return (True, 'Verified')
-            self.login_attempts_count += 1
-            self.save(update_fields=['login_attempts_count'])
-            return (
-                  False, INVALID_OTP
-            )
-            
 
       @property
       def user_groups(self):

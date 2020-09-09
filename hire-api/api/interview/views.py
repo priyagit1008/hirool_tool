@@ -35,9 +35,11 @@ from libs.pagination import StandardResultsSetPagination
 # app level imports
 from .models import Interview, InterviewRound, InterviewStatus
 # project level imports
-from clients.models import Client, Job
+from clients.models import Client
 from accounts.models import User
 from candidate.models import Candidate
+from jobs.models import Job
+
 # from .services import ClientServices
 
 from .serializers import (
@@ -113,9 +115,9 @@ class InterviewViewSet(GenericViewSet):
 		interview = serializer.create(serializer.validated_data)
 
 		if interview:
-			msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
-			send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
+			# msg_plain = render_to_string('interview_email_message.txt', {"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			# msg_html = render_to_string('interview_email.html',{"name":interview.candidate.first_name,"date": interview.date,"location":interview.location})
+			# send_mail('Hirool', msg_plain, settings.EMAIL_HOST_USER, [interview.candidate.email],html_message=msg_html, )
 			return Response({'status':'Successfully added'},status.HTTP_201_CREATED)
 
 		return Response({"status": "error"}, status.HTTP_404_NOT_FOUND)
@@ -206,7 +208,7 @@ class InterviewViewSet(GenericViewSet):
 
 
 
-	@action(methods=['put'], detail=False, permission_classes=[IsAuthenticated,HiroolReadOnly], )
+	@action(methods=['put'], detail=False, permission_classes=[IsAuthenticated,], )
 	def interview_update(self, request):
 		"""
 		Return user profile data and groups
@@ -245,37 +247,6 @@ class InterviewViewSet(GenericViewSet):
 		return Response({"status":"interview is deleted "}, status.HTTP_200_OK)
 
 
-
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def interview_columns(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_columns.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
-
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def interview_status(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_status.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
-
-
-	@action(methods=['get', 'patch'],detail=False,
-		permission_classes=[IsAuthenticated,],
-		)
-	def interview_round(self, request):
-		file_path = os.path.join(JSON_MEDIA_ROOT,str('interview_round.json'))
-		myfile= open(file_path,'r')
-		jsondata = myfile.read()
-		obj = json.loads(jsondata)
-		return Response(obj)
 
 
 
@@ -335,7 +306,7 @@ class InterviewRoundViewSet(GenericViewSet):
 	serializers_dict = {
 		'add_round': InterviewRoundRequestSerializer,
 		'round_get': InterviewRoundListSerializer,
-		# 'round_list': InterviewRoundListSerializer,
+		'round_list': InterviewRoundListSerializer,
 		'inetrviewround_dropdown':InterviewRoundDrowpdownGetSerializer,
 
 	}
@@ -387,7 +358,18 @@ class InterviewRoundViewSet(GenericViewSet):
 			serializer = self.get_serializer(self.services.interviewround_filter_service(filter_data), many=True)
 			return Response(serializer.data, status.HTTP_200_OK)
 		except Exception as e:
-			raise
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
+
+
+
+	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ], )
+	def round_list(self, request):
+		try:
+			filter_data = request.query_params.dict()
+			serializer = self.get_serializer(self.services.interviewround_filter_service(filter_data), many=True)
+			return Response(serializer.data, status.HTTP_200_OK)
+		except Exception as e:
+			
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
@@ -408,7 +390,7 @@ class InterviewStatusViewSet(GenericViewSet):
 		'add_status': InterviewStatusRequestSerializer,
 		'status_get': InterviewStatusListSerializer,
 		'inetrviewstatus_dropdown':InterviewStatusDrowpdownGetSerializer,
-		# 'status_list': InterviewStatusListSerializer,
+		'status_list': InterviewStatusListSerializer,
 	}
 
 	def get_serializer_class(self):
@@ -458,8 +440,13 @@ class InterviewStatusViewSet(GenericViewSet):
 			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
 
-	# @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ], )
-	# def status_list(self, request):
+	@action(methods=['get'], detail=False, permission_classes=[IsAuthenticated, ], )
+	def status_list(self, request):
+		try:
+			filter_data = request.query_params.dict()
+			serializer = self.get_serializer(self.services.interviewstatus_filter_service(filter_data), many=True)
+			return Response(serializer.data, status.HTTP_200_OK)
+		except Exception as e:
+			raise
+			return Response({"status": "Not Found"}, status.HTTP_404_NOT_FOUND)
 
-	# 	data = self.get_serializer(self.queryset, many=True).data
-	# 	return Response(data, status.HTTP_200_OK)

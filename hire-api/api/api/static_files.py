@@ -1,0 +1,1 @@
+CANDIATE_COLUMNS = 'candidate_columns.json'
