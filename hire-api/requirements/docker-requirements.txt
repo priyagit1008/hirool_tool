@@ -1,6 +1,6 @@
 celery==4.2.0
 ddtrace==0.16.0
-Django==2.0.6
+Django==2.2.24
 django-admin-rangefilter==0.3.7
 django-filter==2.0.0
 django-import-export==1.0.1
